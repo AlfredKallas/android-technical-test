@@ -3,11 +3,12 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
     namespace = "fr.leboncoin.data"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
@@ -41,6 +42,10 @@ android {
         implementation(libs.retrofit.core)
         implementation(libs.retrofit.kotlin.serialization)
         implementation(libs.okhttp.logging)
+
+        //Hilt
+        implementation(libs.hilt.android)
+        ksp(libs.hilt.compiler)
 
         implementation(libs.kotlin.serialization.json)
 
