@@ -3,13 +3,16 @@ package fr.leboncoin.androidrecruitmenttestapp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.leboncoin.data.network.model.AlbumDto
 import fr.leboncoin.data.repository.AlbumRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AlbumsViewModel(
+@HiltViewModel
+class AlbumsViewModel @Inject constructor(
     private val repository: AlbumRepository,
 ) : ViewModel() {
 

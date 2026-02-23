@@ -1,6 +1,6 @@
-package fr.leboncoin.data.repository
+package fr.leboncoin.network.repository
 
-import fr.leboncoin.data.network.api.AlbumApiService
+import fr.leboncoin.network.api.AlbumApiService
 
 class AlbumRepository(
     private val albumApiService: AlbumApiService,

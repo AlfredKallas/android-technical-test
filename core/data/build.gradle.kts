@@ -43,6 +43,9 @@ android {
         implementation(libs.retrofit.kotlin.serialization)
         implementation(libs.okhttp.logging)
 
+        implementation(libs.coil.network.okhttp)
+        implementation(libs.coil.svg)
+
         //Hilt
         implementation(libs.hilt.android)
         ksp(libs.hilt.compiler)
