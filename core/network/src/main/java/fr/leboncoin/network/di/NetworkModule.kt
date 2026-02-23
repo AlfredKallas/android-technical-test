@@ -31,7 +31,6 @@ import dagger.hilt.components.SingletonComponent
 import fr.leboncoin.network.BuildConfig
 import fr.leboncoin.network.api.AlbumApiService
 import fr.leboncoin.network.coil.CoilHeadersInterceptor
-import fr.leboncoin.network.repository.AlbumRepository
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -43,12 +42,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 internal object NetworkModule {
-
-    @Provides
-    @Singleton
-    fun AlbumsApiRepository(
-        albumApiService: AlbumApiService
-    ): AlbumRepository = AlbumRepository(albumApiService)
 
     @Provides
     @Singleton
