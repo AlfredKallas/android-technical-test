@@ -1,7 +1,7 @@
 package fr.leboncoin.androidrecruitmenttestapp
 
-import fr.leboncoin.data.network.api.AlbumApiService
-import fr.leboncoin.data.network.model.AlbumDto
+import fr.leboncoin.network.api.AlbumApiService
+import fr.leboncoin.network.model.AlbumDto
 import fr.leboncoin.data.repository.AlbumRepository
 import org.junit.Assert.assertTrue
 import org.junit.Test

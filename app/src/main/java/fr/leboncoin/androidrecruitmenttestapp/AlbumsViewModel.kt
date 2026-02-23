@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import fr.leboncoin.data.network.model.AlbumDto
+import fr.leboncoin.network.model.AlbumDto
 import fr.leboncoin.data.repository.AlbumRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -23,7 +23,9 @@ class AlbumsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _albums.emit(repository.getAllAlbums())
-            } catch (_: Exception) { /* TODO: Handle errors */ }
+            } catch (ex: Exception) {
+            println(ex)
+            /* TODO: Handle errors */ }
         }
     }
 

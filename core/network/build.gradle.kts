@@ -20,7 +20,7 @@ android {
     buildTypes {
         debug {
             isMinifyEnabled = false
-            buildConfigField("String", "BASE_URL", "\"https://static.leboncoin.fr/img/shared/\"")
+            buildConfigField("String", "BASE_URL", "\"https://static.leboncoin.fr/\"")
         }
         release {
             isMinifyEnabled = true
@@ -28,7 +28,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_URL", "\"https://static.leboncoin.fr/img/shared/\"")
+            buildConfigField("String", "BASE_URL", "\"https://static.leboncoin.fr/\"")
         }
     }
     compileOptions {

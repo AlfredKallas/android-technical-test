@@ -39,6 +39,7 @@ android {
     }
 
     dependencies {
+        implementation(project(":core:network"))
         implementation(libs.retrofit.core)
         implementation(libs.retrofit.kotlin.serialization)
         implementation(libs.okhttp.logging)
