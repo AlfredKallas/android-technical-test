@@ -1,5 +1,7 @@
 package fr.leboncoin.analytics
 
+import kotlinx.serialization.Serializable
+
 interface AnalyticsCategory {
     val name: String
     val analyticsAtScreen: String
@@ -35,5 +37,6 @@ data class AnalyticsEvent(
      *
      * @param value - the parameter value.
      */
+    @Serializable
     data class Param(val key: String, val value: String)
 }

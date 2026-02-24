@@ -5,8 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
+import fr.leboncoin.analytics.AnalyticsEvent
+import fr.leboncoin.androidrecruitmenttestapp.utils.AnalyticsHelper
 import fr.leboncoin.network.model.AlbumDto
 import fr.leboncoin.data.repository.AlbumRepository
+import fr.leboncoin.data.repository.AnalyticsEventsRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -17,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AlbumsViewModel @Inject constructor(
     private val repository: AlbumRepository,
+    private val analyticsRepository: AnalyticsEventsRepository
 ) : ViewModel() {
 
     private val _albums = MutableSharedFlow<List<AlbumDto>>()
@@ -39,12 +43,14 @@ class AlbumsViewModel @Inject constructor(
         }
         .cachedIn(viewModelScope)
 
-    class Factory(
-        private val repository: AlbumRepository,
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return AlbumsViewModel(repository) as T
-        }
+    fun trackEventOnItemSelected(id: String) {
+        analyticsRepository.logEvent(
+            AnalyticsEvent(
+                AnalyticsEvent.AnalyticsType.UserInteraction("AlbumsScreen"),
+                listOf(AnalyticsEvent.Param("item_id", id))
+            )
+        )
     }
+
+
 }

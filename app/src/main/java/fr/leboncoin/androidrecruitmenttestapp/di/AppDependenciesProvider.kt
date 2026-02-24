@@ -9,5 +9,4 @@ interface AppDependenciesProvider {
 
 class AppDependencies {
     val logger: Logger by lazy { Logger.getGlobal() }
-    val analyticsHelper: AnalyticsHelper by lazy { AnalyticsHelper() }
 }

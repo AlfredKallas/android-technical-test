@@ -11,6 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import fr.leboncoin.androidrecruitmenttestapp.di.AppDependenciesProvider
 import fr.leboncoin.androidrecruitmenttestapp.ui.AlbumsScreen
 import fr.leboncoin.androidrecruitmenttestapp.utils.AnalyticsHelper
+import fr.leboncoin.data.repository.AnalyticsEventsRepository
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -33,8 +34,8 @@ class MainActivity : ComponentActivity() {
                 AlbumsScreen(
                     viewModel = viewModel,
                     onItemSelected = {
-//                        analyticsHelper.trackSelection(it.id.toString())
-                        startActivity(Intent(this, DetailsActivity::class.java))
+                        viewModel.trackEventOnItemSelected(it.id.toString())
+//                        startActivity(Intent(this, DetailsActivity::class.java))
                     }
                 )
             }

@@ -45,6 +45,7 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.network)
     implementation(projects.core.common)
+    implementation(projects.core.analytics)
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
 
