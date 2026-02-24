@@ -1,4 +1,4 @@
-package com.example.leboncointestapp.utils.pagingdsl
+package fr.leboncoin.ui.pagingdsl
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.lazy.LazyItemScope

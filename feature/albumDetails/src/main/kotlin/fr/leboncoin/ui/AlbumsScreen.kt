@@ -1,4 +1,4 @@
-package fr.leboncoin.androidrecruitmenttestapp.ui
+package fr.leboncoin.ui
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloat
@@ -46,26 +46,39 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.adevinta.spark.components.progress.CircularProgressIndicator
 import com.adevinta.spark.components.scaffold.Scaffold
-import com.example.leboncointestapp.utils.pagingdsl.HandlePagingItems
-import com.example.leboncointestapp.utils.pagingdsl.StablePagingItems
-import fr.leboncoin.androidrecruitmenttestapp.AlbumsViewModel
+import fr.leboncoin.ui.pagingdsl.HandlePagingItems
+import fr.leboncoin.ui.pagingdsl.StablePagingItems
 import fr.leboncoin.data.model.Album
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AlbumsScreen(
-    viewModel: AlbumsViewModel,
-    onItemSelected : (Album) -> Unit,
     modifier: Modifier = Modifier,
+    onItemSelected : (Album) -> Unit,
 ) {
+    val viewModel: AlbumDetailsViewModel = hiltViewModel()
     val pagingItems = viewModel.paginationFlow.collectAsLazyPagingItems()
 
     val stableItems = remember(pagingItems) { StablePagingItems(pagingItems) }
 
+    AlbumsScreen(
+        modifier = modifier,
+        stablePagingItems = stableItems,
+        onItemSelected = onItemSelected
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun AlbumsScreen(
+    modifier: Modifier = Modifier,
+    stablePagingItems: StablePagingItems<Album>,
+    onItemSelected : (Album) -> Unit
+) {
     Scaffold(
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
@@ -78,12 +91,12 @@ fun AlbumsScreen(
                 cacheWindow = dpCacheWindow
             )
 
-            HandlePagingItems(stableItems) {
+            HandlePagingItems(stablePagingItems) {
                 onRefresh { SongsLoadingScreen() }
                 onError { error ->
                     ErrorScreen(
                         message = error.message.orEmpty(),
-                        onRetry = { pagingItems.retry() }
+                        onRetry = { stablePagingItems.items.retry() }
                     )
                 }
                 onSuccess { _ ->

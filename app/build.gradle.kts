@@ -38,6 +38,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -46,6 +47,9 @@ dependencies {
     implementation(projects.core.network)
     implementation(projects.core.common)
     implementation(projects.core.analytics)
+
+    implementation(projects.feature.albumslist)
+    
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
 
@@ -77,4 +81,19 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     debugImplementation(libs.leakcanary.android)
+    implementation(libs.timber)
+    
+    // Navigation 3
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.material3.adaptive.navigation3)
+    implementation(libs.kotlinx.serialization.core)
+    
+    // Adaptive UI
+    implementation(libs.androidx.adaptive)
+    implementation(libs.androidx.adaptive.layout)
+    implementation(libs.androidx.adaptive.navigation)
+    implementation(libs.androidx.adaptive.navigation.suite)
+    implementation(libs.androidx.window.size)
 }

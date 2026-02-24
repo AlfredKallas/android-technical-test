@@ -5,17 +5,21 @@ import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
 import dagger.hilt.android.HiltAndroidApp
-import fr.leboncoin.androidrecruitmenttestapp.di.AppDependencies
-import fr.leboncoin.androidrecruitmenttestapp.di.AppDependenciesProvider
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
-class PhotoApp : Application(), AppDependenciesProvider, SingletonImageLoader.Factory {
+class PhotoApp : Application(), SingletonImageLoader.Factory {
 
     @Inject
     lateinit var imageLoader: dagger.Lazy<ImageLoader>
 
-    override fun newImageLoader(context: PlatformContext): ImageLoader = imageLoader.get()
+    override fun onCreate() {
+        super.onCreate()
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+    }
 
-    override val dependencies: AppDependencies by lazy { AppDependencies() }
+    override fun newImageLoader(context: PlatformContext): ImageLoader = imageLoader.get()
 }

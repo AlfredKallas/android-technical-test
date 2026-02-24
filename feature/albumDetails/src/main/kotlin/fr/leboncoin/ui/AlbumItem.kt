@@ -1,6 +1,5 @@
-package fr.leboncoin.androidrecruitmenttestapp.ui
+package fr.leboncoin.ui
 
-import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -19,8 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import coil3.network.NetworkHeaders
-import coil3.network.httpHeaders
+import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.adevinta.spark.ExperimentalSparkApi
@@ -28,7 +30,6 @@ import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.card.Card
 import com.adevinta.spark.components.chips.ChipTinted
 import fr.leboncoin.data.model.Album
-import fr.leboncoin.network.model.AlbumDto
 
 @OptIn(ExperimentalSparkApi::class)
 @Composable
@@ -45,15 +46,27 @@ fun AlbumItem(
         onClick = { onItemSelected(album) },
     ) {
         Row {
+            var loading by remember { mutableStateOf(true) }
+
             AsyncImage(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(1f)
+                    .shimmer(loading),
+                onSuccess = {
+                    loading = false
+                },
+                onError = {
+                    println("The image was not loaded because of: ${it.result.throwable.message}")
+                    loading = false
+                },
+//                error = painterResource(R.drawable.placeholder_image),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(album.thumbnailUrl)
                     .crossfade(true)
+                    .diskCachePolicy(CachePolicy.ENABLED)
                     .build(),
                 contentDescription = album.title,
-                modifier = modifier
-                    .fillMaxHeight()
-                    .aspectRatio(1f),
                 contentScale = ContentScale.Crop
             )
 
