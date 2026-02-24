@@ -42,6 +42,7 @@ android {
         implementation(projects.core.network)
         implementation(projects.core.database)
         implementation(projects.core.analytics)
+        implementation(projects.core.common)
 
         implementation(libs.retrofit.core)
         implementation(libs.retrofit.kotlin.serialization)

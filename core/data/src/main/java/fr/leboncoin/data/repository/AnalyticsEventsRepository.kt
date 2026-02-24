@@ -1,47 +1,31 @@
 package fr.leboncoin.data.repository
 
+import com.google.samples.apps.nowinandroid.core.common.network.di.ApplicationScope
 import fr.leboncoin.analytics.AnalyticsEvent
 import fr.leboncoin.analytics.AnalyticsProvider
-import fr.leboncoin.database.dao.AnalyticsEventsDao
-import fr.leboncoin.database.model.AnalyticsEventsEntity
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.serialization.json.Json
-import java.lang.System
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.Long
 
 interface AnalyticsEventsRepository {
-    suspend fun insertEvent(event: AnalyticsEvent)
-    suspend fun logEvent(event: AnalyticsEvent)
+    fun logEvent(event: AnalyticsEvent)
 
 }
 
 class AnalyticsEventsRepositoryImpl @Inject constructor(
     private val providers: Set<@JvmSuppressWildcards AnalyticsProvider>,
-    private val analyticsEventsDao: AnalyticsEventsDao,
-    private val json: Json
+    // This is added to not stop logging an event if it takes a bit longer
+    // and the user has moved away from the screen
+    @ApplicationScope private val externalScope: CoroutineScope,
 ): AnalyticsEventsRepository {
-    override suspend fun insertEvent(event: AnalyticsEvent) {
-        analyticsEventsDao.insertEvent(event.toEntity(json))
-    }
 
-    override suspend fun logEvent(event: AnalyticsEvent) = coroutineScope {
-        providers.forEach {
-            async {
-                it.logEvent(event)
-            }.await()
+    override fun logEvent(event: AnalyticsEvent) {
+        externalScope.launch {
+            providers.forEach {
+                launch {
+                    it.logEvent(event)
+                }
+            }
         }
     }
-}
-
-private fun AnalyticsEvent.toEntity(
-    json: Json
-): AnalyticsEventsEntity {
-    return AnalyticsEventsEntity(
-        eventName = type.name,
-        screenName = type.analyticsAtScreen,
-        timestamp = System.currentTimeMillis(),
-        properties = json.encodeToString(extras)
-    )
 }
