@@ -39,7 +39,10 @@ android {
     }
 
     dependencies {
-        implementation(project(":core:network"))
+        implementation(projects.core.network)
+        implementation(projects.core.database)
+        implementation(projects.core.analytics)
+
         implementation(libs.retrofit.core)
         implementation(libs.retrofit.kotlin.serialization)
         implementation(libs.okhttp.logging)

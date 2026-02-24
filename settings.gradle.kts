@@ -19,8 +19,11 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Android RecruitmentTest App"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+rootProject.name = "AndroidRecruitmentTestApp"
 include(":app")
 include(":core:data")
 include(":core:network")
 include(":core:analytics")
+include(":core:database")

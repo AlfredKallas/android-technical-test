@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 The Android Open Source Project
+ * Copyright 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package fr.leboncoin.analytics
+package fr.leboncoin.database.di
 
-/**
- * Interface for logging analytics events. See
- * `StubAnalyticsHelper` for implementations.
- */
-interface AnalyticsHelper {
-    fun logEvent(event: AnalyticsEvent)
+import fr.leboncoin.database.LeboncoinDatabase
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import fr.leboncoin.database.dao.AnalyticsEventsDao
+
+@Module
+@InstallIn(SingletonComponent::class)
+internal object DaosModule {
+    @Provides
+    fun providesAnalyticsEventsDao(
+        database: LeboncoinDatabase,
+    ): AnalyticsEventsDao = database.analyticsEventsDao()
 }

@@ -4,12 +4,20 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import fr.leboncoin.analytics.AnalyticsHelper
-import fr.leboncoin.analytics.StubAnalyticsHelper
+import dagger.multibindings.IntoSet
+import fr.leboncoin.analytics.AnalyticsProvider
+import fr.leboncoin.analytics.LocalDatabaseAnalyticsProvider
+import fr.leboncoin.analytics.StubAnalyticsProvider
 
 @Module
 @InstallIn(SingletonComponent::class)
 internal abstract class AnalyticsModule {
     @Binds
-    abstract fun bindsAnalyticsHelper(analyticsHelperImpl: StubAnalyticsHelper): AnalyticsHelper
+    @IntoSet
+    abstract fun bindsAnalyticsProvider(analyticsHelperImpl: StubAnalyticsProvider): AnalyticsProvider
+
+
+    @Binds
+    @IntoSet
+    abstract fun bindsDatabaseAnalyticsProvider(analyticsHelperImpl: LocalDatabaseAnalyticsProvider): AnalyticsProvider
 }

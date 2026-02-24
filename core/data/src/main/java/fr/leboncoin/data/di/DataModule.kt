@@ -5,6 +5,8 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import fr.leboncoin.data.repository.AlbumRepository
+import fr.leboncoin.data.repository.AnalyticsEventsRepository
+import fr.leboncoin.data.repository.AnalyticsEventsRepositoryImpl
 import fr.leboncoin.data.repository.OfflineFirstAlbumRepository
 
 @Module
@@ -12,6 +14,11 @@ import fr.leboncoin.data.repository.OfflineFirstAlbumRepository
 abstract class DataModule {
     @Binds
     internal abstract fun bindsAlbumRepository(
-        offlineFirstAlbumRepository: OfflineFirstAlbumRepository,
+        offlineFirstAlbumRepository: OfflineFirstAlbumRepository
     ): AlbumRepository
+
+    @Binds
+    internal abstract fun bindsAnalyticsEventsRepository(
+        analyticsEventsRepositoryImpl: AnalyticsEventsRepositoryImpl
+    ): AnalyticsEventsRepository
 }

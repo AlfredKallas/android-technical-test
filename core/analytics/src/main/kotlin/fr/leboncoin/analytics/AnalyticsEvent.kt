@@ -1,5 +1,10 @@
 package fr.leboncoin.analytics
 
+interface AnalyticsCategory {
+    val name: String
+    val analyticsAtScreen: String
+}
+
 /**
  * Represents an analytics event.
  *
@@ -11,14 +16,13 @@ package fr.leboncoin.analytics
  * @param extras - list of parameters which supply additional context to the event. See `Param`.
  */
 data class AnalyticsEvent(
-    val type: AnalyticsType,
+    val type: AnalyticsCategory,
     val extras: List<Param> = emptyList(),
 ) {
     // Standard analytics types.
-    sealed class AnalyticsType(val name: String) {
-        class Custom(name: String) : AnalyticsType(name)
-        object ScreenView : AnalyticsType("screen_view")
-        object UserInteraction : AnalyticsType("user_interaction")
+    sealed class AnalyticsType(override val analyticsAtScreen: String, override val name: String): AnalyticsCategory {
+        data class ScreenView(override val analyticsAtScreen: String) : AnalyticsType(analyticsAtScreen,"screen_view")
+        data class UserInteraction(override val analyticsAtScreen: String) : AnalyticsType(analyticsAtScreen,"user_interaction")
     }
 
     /**
@@ -32,12 +36,4 @@ data class AnalyticsEvent(
      * @param value - the parameter value.
      */
     data class Param(val key: String, val value: String)
-
-    // Standard parameter keys.
-    class ParamKeys {
-        companion object {
-            const val SCREEN_NAME = "screen_name"
-            const val ITEM_TYPE = "item_type"
-        }
-    }
 }

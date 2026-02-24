@@ -17,8 +17,9 @@
 package fr.leboncoin.analytics
 
 /**
- * Implementation of AnalyticsHelper which does nothing. Useful for tests and previews.
+ * Interface for logging analytics events. See
+ * `StubAnalyticsHelper` for implementations.
  */
-class NoOpAnalyticsHelper : AnalyticsHelper {
-    override fun logEvent(event: AnalyticsEvent) = Unit
+interface AnalyticsProvider {
+    suspend fun logEvent(event: AnalyticsEvent)
 }
