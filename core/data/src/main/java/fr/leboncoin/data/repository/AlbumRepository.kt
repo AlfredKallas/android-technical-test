@@ -9,6 +9,7 @@ import fr.leboncoin.common.result.LCResult
 import fr.leboncoin.common.result.NetworkError
 import fr.leboncoin.common.result.asResult
 import fr.leboncoin.common.result.mapOnError
+import fr.leboncoin.common.result.mapSuccess
 import fr.leboncoin.common.result.mapToUnitOnSuccess
 import fr.leboncoin.common.result.onSuccess
 import fr.leboncoin.data.mapper.AlbumMapper
@@ -24,6 +25,7 @@ import javax.inject.Inject
 
 interface AlbumRepository {
     fun getAlbums(): Flow<PagingData<Album>>
+    fun getAlbumDetails(id: Long): Flow<LCResult<Album>>
     fun sync(): Flow<LCResult<Unit>>
 }
 
@@ -54,13 +56,23 @@ internal class OfflineFirstAlbumRepository @Inject constructor(
         val albums = albumApiService.getAlbums()
         emit(albums)
     }.asResult().map { result ->
-
         result.onSuccess {
             database.albumDao().insertAlbums(albumMapper.toListAlbumEntity(it))
         }.mapToUnitOnSuccess().mapOnError {
             if (it is HttpException) {
                 NetworkError.HttpError(it.code(), it.message())
             } else NetworkError.UnknownError(it)
+        }
+    }
+
+    override fun getAlbumDetails(id: Long): Flow<LCResult<Album>> = flow {
+        val album = database.albumDao().getAlbumDetails(id)
+        emit(album)
+    }.asResult().map { result ->
+        result.mapSuccess {
+            albumMapper.toAlbumWithSong(it)
+        }.mapOnError {
+            NetworkError.UnknownError(it)
         }
     }
 }

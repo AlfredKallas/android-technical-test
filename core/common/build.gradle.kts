@@ -27,6 +27,7 @@ kotlin {
     compilerOptions {
         jvmToolchain(17)
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        freeCompilerArgs.add("-Xcontext-parameters")
     }
 }
 
@@ -34,6 +35,8 @@ dependencies {
     //Hilt
     implementation(libs.hilt.core)
     ksp(libs.hilt.compiler)
+
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     implementation(libs.kotlinx.coroutines.core)
     testImplementation(libs.kotlinx.coroutines.test)

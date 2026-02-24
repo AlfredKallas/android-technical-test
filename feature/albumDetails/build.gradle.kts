@@ -23,7 +23,7 @@ plugins {
 }
 
 android {
-    namespace = "fr.leboncoin.feature.albumslist"
+    namespace = "fr.leboncoin.feature.albumdetails"
     compileSdk = 36
 
     defaultConfig {
@@ -43,11 +43,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 
     buildFeatures {
@@ -55,10 +55,18 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
+}
+
 dependencies {
     implementation(projects.core.data)
     implementation(projects.core.analytics)
     implementation(projects.core.common)
+    implementation(projects.resources)
+
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
 
@@ -81,7 +89,7 @@ dependencies {
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
-    implementation(libs.androidx.material3.adaptive.navigation3)
+    implementation(libs.androidx.compose.adaptive.navigation3)
 
     //Hilt
     implementation(libs.hilt.android)

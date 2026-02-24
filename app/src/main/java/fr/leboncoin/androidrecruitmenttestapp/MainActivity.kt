@@ -5,20 +5,20 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.remember
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.adevinta.spark.SparkTheme
 import dagger.hilt.android.AndroidEntryPoint
-import fr.leboncoin.androidrecruitmenttestapp.navigation.MainDestination
 import fr.leboncoin.androidrecruitmenttestapp.navigation.NavigationManager
 import fr.leboncoin.androidrecruitmenttestapp.navigation.Navigator
-import fr.leboncoin.androidrecruitmenttestapp.ui.AlbumListContent
-import fr.leboncoin.androidrecruitmenttestapp.ui.AlbumListDetailScreen
-import fr.leboncoin.ui.AlbumsScreen
+import fr.leboncoin.ui.navigation.AlbumDetailsEntry
+import fr.leboncoin.ui.navigation.AlbumDetailsNavKey
 import fr.leboncoin.ui.navigation.AlbumsListEntry
 import fr.leboncoin.ui.navigation.AlbumsNavKey
 import javax.inject.Inject
@@ -35,44 +35,24 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-
-            val backstack = rememberNavBackStack(AlbumsNavKey)
-
+            val backstack: NavBackStack<NavKey> = rememberNavBackStack(AlbumsNavKey)
+            val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
             val navigator = remember { Navigator(backstack) }
 
             val entryProvider = entryProvider {
-                AlbumsListEntry(onItemSelected = {
-                    //navigator.navigate() We need to add the Album Details Screen
+                AlbumsListEntry(onItemSelected = { id ->
+                    navigator.navigate(AlbumDetailsNavKey(id.toLong()))
                 })
-
-                bookmarksEntry(navigator)
-                interestsEntry(navigator)
-                topicEntry(navigator)
-                searchEntry(navigator)
+                AlbumDetailsEntry()
             }
 
             SparkTheme {
                 NavDisplay(
-                    backstack = backstack,
-                ) { entry ->
-                    when (val destination = entry.key) {
-                        is MainDestination.AlbumList -> {
-                            NavEntry(key = destination) {
-                                AlbumsScreen(
-                                    onItemSelected = { album ->
-                                        navigationManager.navigateTo(MainDestination.AlbumDetail(album.id))
-                                    },
-
-                                )
-                            }
-                        }
-                        else -> {
-                             NavEntry(key = destination) {
-                                // Fallback
-                            }
-                        }
-                    }
-                }
+                    backStack = backstack,
+                    sceneStrategy = listDetailStrategy,
+                    onBack = { navigator.goBack() },
+                    entryProvider = entryProvider
+                )
             }
         }
     }

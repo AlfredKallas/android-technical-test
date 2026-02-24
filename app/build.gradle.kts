@@ -49,6 +49,7 @@ dependencies {
     implementation(projects.core.analytics)
 
     implementation(projects.feature.albumslist)
+    implementation(projects.feature.albumDetails)
     
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
@@ -87,7 +88,8 @@ dependencies {
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
-    implementation(libs.androidx.material3.adaptive.navigation3)
+    implementation(libs.androidx.compose.adaptive.navigation3)
+
     implementation(libs.kotlinx.serialization.core)
     
     // Adaptive UI
