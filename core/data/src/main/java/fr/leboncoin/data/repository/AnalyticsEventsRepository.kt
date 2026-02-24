@@ -1,6 +1,6 @@
 package fr.leboncoin.data.repository
 
-import com.google.samples.apps.nowinandroid.core.common.network.di.ApplicationScope
+import fr.leboncoin.common.network.di.ApplicationScope
 import fr.leboncoin.analytics.AnalyticsEvent
 import fr.leboncoin.analytics.AnalyticsProvider
 import kotlinx.coroutines.CoroutineScope

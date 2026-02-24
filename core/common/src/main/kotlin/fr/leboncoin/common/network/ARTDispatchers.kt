@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.core.common.network
+package fr.leboncoin.common.network
 
 import javax.inject.Qualifier
 import kotlin.annotation.AnnotationRetention.RUNTIME

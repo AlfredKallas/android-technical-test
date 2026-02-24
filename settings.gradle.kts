@@ -4,6 +4,8 @@ pluginManagement {
             content {
                 includeGroupByRegex("com\\.android.*")
                 includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("fr\\.android.*")
+                includeGroupByRegex("fr\\.leboncoin.*")
                 includeGroupByRegex("androidx.*")
             }
         }
@@ -28,3 +30,4 @@ include(":core:network")
 include(":core:analytics")
 include(":core:database")
 include(":core:common")
+include(":feature:albumslist")

@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import fr.leboncoin.data.mapper.AlbumMapper
+import fr.leboncoin.data.mapper.AlbumMapperImpl
 import fr.leboncoin.data.repository.AlbumRepository
 import fr.leboncoin.data.repository.AnalyticsEventsRepository
 import fr.leboncoin.data.repository.AnalyticsEventsRepositoryImpl
@@ -21,4 +23,9 @@ abstract class DataModule {
     internal abstract fun bindsAnalyticsEventsRepository(
         analyticsEventsRepositoryImpl: AnalyticsEventsRepositoryImpl
     ): AnalyticsEventsRepository
+
+    @Binds
+    internal abstract fun bindsAlbumMapper(
+        albumMapperImpl: AlbumMapperImpl
+    ): AlbumMapper
 }

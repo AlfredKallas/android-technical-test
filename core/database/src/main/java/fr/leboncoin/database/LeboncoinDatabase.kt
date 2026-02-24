@@ -20,12 +20,15 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import fr.leboncoin.database.util.InstantConverter
+import fr.leboncoin.database.dao.AlbumDao
 import fr.leboncoin.database.dao.AnalyticsEventsDao
+import fr.leboncoin.database.model.AlbumEntity
 import fr.leboncoin.database.model.AnalyticsEventsEntity
 
 @Database(
     entities = [
-        AnalyticsEventsEntity::class
+        AnalyticsEventsEntity::class,
+        AlbumEntity::class
     ],
     version = 1,
     exportSchema = true,
@@ -33,6 +36,7 @@ import fr.leboncoin.database.model.AnalyticsEventsEntity
 @TypeConverters(
     InstantConverter::class,
 )
-internal abstract class LeboncoinDatabase : RoomDatabase() {
+abstract class LeboncoinDatabase : RoomDatabase() {
     abstract fun analyticsEventsDao(): AnalyticsEventsDao
+    abstract fun albumDao(): AlbumDao
 }

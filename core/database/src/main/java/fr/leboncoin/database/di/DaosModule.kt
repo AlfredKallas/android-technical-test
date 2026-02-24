@@ -21,6 +21,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import fr.leboncoin.database.dao.AlbumDao
 import fr.leboncoin.database.dao.AnalyticsEventsDao
 
 @Module
@@ -30,4 +31,9 @@ internal object DaosModule {
     fun providesAnalyticsEventsDao(
         database: LeboncoinDatabase,
     ): AnalyticsEventsDao = database.analyticsEventsDao()
+
+    @Provides
+    fun providesAlbumDao(
+        database: LeboncoinDatabase,
+    ): AlbumDao = database.albumDao()
 }

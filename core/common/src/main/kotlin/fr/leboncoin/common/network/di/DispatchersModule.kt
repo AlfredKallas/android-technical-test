@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.core.common.network.di
+package fr.leboncoin.common.network.di
 
-import com.google.samples.apps.nowinandroid.core.common.network.ARTDispatchers.Default
-import com.google.samples.apps.nowinandroid.core.common.network.ARTDispatchers.IO
-import com.google.samples.apps.nowinandroid.core.common.network.Dispatcher
+import fr.leboncoin.common.network.ARTDispatchers.Default
+import fr.leboncoin.common.network.ARTDispatchers.IO
+import fr.leboncoin.common.network.Dispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

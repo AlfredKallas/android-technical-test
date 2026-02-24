@@ -43,6 +43,7 @@ android {
         implementation(projects.core.database)
         implementation(projects.core.analytics)
         implementation(projects.core.common)
+        implementation(projects.core.database)
 
         implementation(libs.retrofit.core)
         implementation(libs.retrofit.kotlin.serialization)
@@ -54,6 +55,9 @@ android {
         //Hilt
         implementation(libs.hilt.android)
         ksp(libs.hilt.compiler)
+
+        //Paging
+        implementation(libs.room.paging)
 
         implementation(libs.kotlin.serialization.json)
 
