@@ -22,6 +22,7 @@ material = "1.13.0"
 room = "2.8.4"
 kotlinxCoroutines = "1.10.1"
 turbine = "1.2.0"
+paging = "3.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -80,9 +81,9 @@ room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
 room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
 
 #Paging
-#paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
-#paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
-#paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
+paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
+paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
+paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

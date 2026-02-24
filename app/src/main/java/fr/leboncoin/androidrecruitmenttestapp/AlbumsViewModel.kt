@@ -10,6 +10,7 @@ import fr.leboncoin.data.repository.AlbumRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,7 +22,7 @@ class AlbumsViewModel @Inject constructor(
     private val _albums = MutableSharedFlow<List<AlbumDto>>()
     val albums: SharedFlow<List<AlbumDto>> = _albums
 
-    fun loadAlbums() {
+    private fun loadAlbums() {
         viewModelScope.launch {
             try {
                 repository.sync()
@@ -33,6 +34,9 @@ class AlbumsViewModel @Inject constructor(
     }
 
     val paginationFlow = repository.getAlbums()
+        .onStart {
+            loadAlbums()
+        }
         .cachedIn(viewModelScope)
 
     class Factory(

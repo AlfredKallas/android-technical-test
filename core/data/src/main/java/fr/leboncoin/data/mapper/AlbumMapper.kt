@@ -3,6 +3,7 @@ package fr.leboncoin.data.mapper
 import fr.leboncoin.data.model.Album
 import fr.leboncoin.database.model.AlbumEntity
 import fr.leboncoin.network.model.AlbumDto
+import javax.inject.Inject
 
 interface AlbumMapper {
     fun toAlbumWithSong(albumWithSongsEntity: AlbumEntity): Album
@@ -12,10 +13,11 @@ interface AlbumMapper {
     fun toListAlbumEntity(albumDtoList: List<AlbumDto>): List<AlbumEntity>
 }
 
-class AlbumMapperImpl : AlbumMapper {
+class AlbumMapperImpl @Inject constructor() : AlbumMapper {
     override fun toAlbumWithSong(albumWithSongsEntity: AlbumEntity): Album =
         Album(
             id = albumWithSongsEntity.id,
+            albumId = albumWithSongsEntity.albumId,
             title = albumWithSongsEntity.title,
             url = albumWithSongsEntity.url,
             thumbnailUrl = albumWithSongsEntity.thumbnailUrl
@@ -32,7 +34,4 @@ class AlbumMapperImpl : AlbumMapper {
 
     override fun toListAlbumEntity(albumDtoList: List<AlbumDto>): List<AlbumEntity> =
         albumDtoList.map { toAlbumEntity(it) }
-}
-
-
 }

@@ -27,13 +27,14 @@ import com.adevinta.spark.ExperimentalSparkApi
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.card.Card
 import com.adevinta.spark.components.chips.ChipTinted
+import fr.leboncoin.data.model.Album
 import fr.leboncoin.network.model.AlbumDto
 
 @OptIn(ExperimentalSparkApi::class)
 @Composable
 fun AlbumItem(
-    album: AlbumDto,
-    onItemSelected : (AlbumDto) -> Unit,
+    album: Album,
+    onItemSelected : (Album) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -47,11 +48,6 @@ fun AlbumItem(
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(album.thumbnailUrl)
-                    .httpHeaders(
-                        NetworkHeaders.Builder()
-                            .add("User-Agent", "LeboncoinApp/1.0")
-                            .build()
-                    )
                     .crossfade(true)
                     .build(),
                 contentDescription = album.title,

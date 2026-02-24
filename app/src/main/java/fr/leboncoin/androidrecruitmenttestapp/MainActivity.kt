@@ -17,23 +17,23 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: AlbumsViewModel by viewModels()
 
-    private val analyticsHelper: AnalyticsHelper by lazy {
-        val dependencies = (application as AppDependenciesProvider).dependencies
-        dependencies.analyticsHelper
-    }
+//    private val analyticsHelper: AnalyticsHelper by lazy {
+//        val dependencies = (application as AppDependenciesProvider).dependencies
+//        dependencies.analyticsHelper
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        analyticsHelper.initialize(this)
+//        analyticsHelper.initialize(this)
 
         setContent {
             SparkTheme {
                 AlbumsScreen(
                     viewModel = viewModel,
                     onItemSelected = {
-                        analyticsHelper.trackSelection(it.id.toString())
+//                        analyticsHelper.trackSelection(it.id.toString())
                         startActivity(Intent(this, DetailsActivity::class.java))
                     }
                 )

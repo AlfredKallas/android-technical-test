@@ -18,6 +18,8 @@ package fr.leboncoin.network.di
 
 import android.content.Context
 import coil3.ImageLoader
+import coil3.disk.DiskCache
+import coil3.memory.MemoryCache
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.svg.SvgDecoder
 import coil3.util.DebugLogger
@@ -35,6 +37,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import okio.Path.Companion.toPath
 import retrofit2.Retrofit
 import retrofit2.create
 import javax.inject.Singleton
@@ -77,7 +80,6 @@ internal object NetworkModule {
     @fr.leboncoin.network.di.Retrofit
     fun providesOkHttpClientRetrofit(): OkHttpClient =
         OkHttpClient.Builder()
-            .addInterceptor(CoilHeadersInterceptor())
             .addInterceptor(
                 HttpLoggingInterceptor()
                     .apply {
@@ -121,6 +123,17 @@ internal object NetworkModule {
         ImageLoader.Builder(application)
             .components { add(OkHttpNetworkFetcherFactory(callFactory = { okHttpClient.get() })) }
             .components { add(SvgDecoder.Factory()) }
+            .memoryCache {
+                MemoryCache.Builder()
+                    .maxSizePercent(application, 0.25) // Use 25% of available RAM
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(application.cacheDir.resolve("image_cache").absolutePath.toPath())
+                    .maxSizeBytes(512L * 1024L * 1024L) // 512MB of file storage
+                    .build()
+            }
             .apply {
                 if (BuildConfig.DEBUG) {
                     logger(DebugLogger())
