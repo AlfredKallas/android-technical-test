@@ -55,6 +55,14 @@ This project leverages the **Convention Plugins** pattern (using the `build-logi
 - **`art.android.application.flavors`**: Standardizes product flavors and build configurations for the application module.
 - **`art.android.library.flavors`**: Ensures consistent flavor configurations across all library modules.
 
+### Build Variants
+
+The project includes the following build variants:
+
+-   `dev`: For development purposes. It has a `.dev` application ID suffix.
+-   `prod`: The production-ready variant.
+
+
 ### Extensibility Pattern
 The architecture is designed to be highly extensible. By creating new plugins in the `build-logic` module, you can easily share recurrent configurations and dependencies. For example:
 - **Dependency Bundles**: Group related dependencies (e.g., `Compose`, `Retrofit`, `Hilt`) into a single plugin that can be applied to any module.
