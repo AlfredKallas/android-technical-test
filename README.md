@@ -1,95 +1,73 @@
-# AndroidRecruitmentTestApp
-## ÉNONCÉ
+# Leboncoin Interview App – README
 
-Vous devez améliorer une application native Android affichant la liste des items suivant (titres d'albums) : https://static.leboncoin.fr/img/shared/technical-test.json
+## Overview
+This is the interview project for **Leboncoin**. The original codebase contained numerous bugs and architectural issues. The overhaul fixes those problems and delivers a clean, modular, and production‑ready Android app that displays a list of albums fetched from a backend service.
 
-### Prérequis 
+## What Was Fixed
 
-* Le projet est à réaliser sur la plateforme Android (API minimum 24) avec la dernière version stable d'Android Studio
-* Vous devez implémenter un système de persistance des données afin que les données puissent être disponibles offline, même après redémarrage de l'application
-* Vous êtes invité à modifier tout ce qui vous semble pertinent pour améliorer le code existant
-* Il y a des pièges et anomalies à débusquer et à corriger. Arriverez-vous à tous les corriger? 
-* Vous devez intégrer une fonctionnalité de mise en favoris qui persiste en local
-* Vous devez implementer un écran de détail
-* Vous êtes libre d'utiliser le langage et les librairies que vous voulez
-* Votre code doit être versionné sur un dépôt Git librement consultable. Vous êtes libre de créer plusieurs branches pour votre développement, mais nous ne relirons que la branche configurée par défaut, veillez à ce que celle-ci soit à jour
-* Un document récapitulant les choix d'architecture, des patterns et des librairies appliquées
+| Area | Issue | Solution |
+|------|-------|----------|
+| **Coroutines** | GlobalScope was used for network calls, causing leaks and uncontrolled lifecycles. | Replaced GlobalScope with structured concurrency (ViewModelScope / repository‑scoped flows). |
+| **Performance & Lag** | No caching, all data fetched on‑the‑fly; images re‑downloaded each time. | • Added a **Room** database cache.<br>• Loaded data via **Paging3** (`PagingData`).<br>• Enabled **disk caching** for images and created a custom **ImageLoader** with an interceptor that injects required HTTP headers. |
+| **Architecture** | Ad‑hoc dependencies, no separation of concerns, violated SOLID. | • Integrated **Dagger Hilt** for dependency injection.<br>• Adopted a clear **MVVM** stack (Data → Repository → ViewModel → UI). |
+| **Modularisation** | Single monolithic module. | Split the project into logical modules:
+| | **App** | Entry point, application class, DI setup. |
+| | **Core** | Shared utilities: 
+- `core:common` – generic helpers, Hilt core bindings.
+- `core:database` – Room entities & DAOs.
+- `core:data` – Repositories & data‑layer logic.
+- `core:network` – Retrofit API, OkHttp client, interceptors.
+- `core:analytics` – Analytics scaffolding. |
+| | **Feature** | One module per feature: 
+- `feature:albumslist` – Album list screen, ViewModel, UI state/models.
+- `feature:albumDetails` – Album detail screen, ViewModel, UI state/models.
+- `feature:favourites` – Favourite handling, DB caching. |
+| | **Resources** | Strings, drawables, themes, and other assets. |
+| **Build Types** | Only a debug configuration existed. | Added **debug** and **release** build types. Release builds enable minification (R8) while library modules keep minification disabled to avoid class stripping. |
+| **Localization** | Hard‑coded UI text. | All user‑visible strings moved to `strings.xml`. The app automatically updates UI when the device language changes. |
+| **Navigation** | Manual fragment transactions. | Switched to **Navigation‑Compose (Nav3)** with a single NavHost. |
+| **Adaptive UI** | UI only designed for phones. | Implemented **adaptive UI** using Navigation‑Compose’s `adaptive` support – list‑detail layout works on tablets and larger screens. |
 
-### Nous observerons particulièrement 
+## Project Structure
+```
+android-technical-test/
+├─ app/                     # Application module (entry point)
+├─ core/
+│   ├─ common/              # Shared utilities, Hilt core bindings
+│   ├─ database/            # Room DB, entities, DAOs
+│   ├─ data/                # Repositories, use‑cases
+│   ├─ network/             # Retrofit API, OkHttp client, interceptors
+│   └─ analytics/           # Analytics scaffolding
+├─ feature/
+│   ├─ albumslist/          # Album list UI + ViewModel
+│   ├─ albumDetails/        # Album detail UI + ViewModel
+│   └─ favourites/          # Favourites handling & UI
+├─ resources/               # Strings, drawables, themes
+└─ build.gradle.kts         # Root Gradle script
+```
 
-* L'architecture 
-* Votre capacité à débusquer et corriger les bugs
-* L'aspect multi-modulaire
-* Les patterns appliqués
-* Les choix de librairies
-* Les performances de l'application
-* Les tests
-* L'utilisation d'un framework d'injection de dépendance
-* La justification des choix effectués
+## Key Dependencies
+- **Kotlin 1.9**, **Coroutines**, **Flow**
+- **Retrofit 2**, **OkHttp 4**, **Coil** (image loading)
+- **Room 2**, **Paging 3**
+- **Dagger Hilt** (DI)
+- **Navigation‑Compose (Nav3)** + **Adaptive UI**
+- **Jetpack Compose** UI toolkit
 
-### Bonus
+## Building & Running
+```bash
+# Debug build (no minification)
+./gradlew assembleDebug
 
-* Votre capacité à faire évoluer l'existant et à planifier les évolutions.
-  On souhaite vous faire réfléchir à la planification des évolutions de l'application, et le documenter. 
+# Release build (minified, ProGuard/R8 applied)
+./gradlew assembleRelease
+```
+The app will automatically pick the device language and display the appropriate localized strings.
 
-### Attendu
+## Testing
+- Unit tests live in each module’s `src/test/kotlin` folder.
+- Integration tests use **Turbine** for Flow verification.
+- JaCoCo coverage is aggregated across all modules via the `jacocoMergedReport` task.
 
-On attend que vous développiez cette app comme si c'était un projet professionnel. 
-Nous vous recommandons de prendre entre (~ 4 à 6 heures) pour le réaliser.
-Si plus de temps est nécessaire, merci de le demander.
-
-### Nous rejetterons le test si un des éléments suivants n'est pas présent:
-
-* Tests unitaires
-* L'application crash systématiquement
-* La gestion des changements de configuration
-* Aucune justification des choix effectués
-
-
----
-
-## ASSIGNMENT
-
-You must improve a native Android application displaying the following items (album titles): https://static.leboncoin.fr/img/shared/technical-test.json
-
-### Prerequisites
-
-* The project must be developed on the Android platform (minimum API 24) with the latest stable version of Android Studio
-* You must implement a data persistence system so that data can be available offline, even after restarting the application
-* You are invited to modify anything you deem relevant to improve the existing code
-* There are traps and bugs to uncover and fix. Will you be able to fix them all?
-* You must integrate a favorites feature that persists locally
-* You must implement a detail screen
-* You are free to use the language and libraries you want
-* Your code must be versioned on a freely accessible Git repository. You are free to create multiple branches for your development, but we will only review the default configured branch, make sure it is up to date
-* A document summarizing the architecture choices, patterns and libraries applied
-
-### We will particularly observe
-
-* The architecture
-* Your ability to find and fix bugs
-* The multi-modular aspect
-* The patterns applied
-* Library choices
-* Application performance
-* Tests
-* The use of a dependency injection framework
-* Justification of choices made
-
-### Bonus
-
-* Your ability to evolve the existing codebase and plan for future developments.
-  We want you to think about planning the application's evolutions, and document it.
-
-### Expected
-
-We expect you to develop this app as if it were a professional project.
-We recommend taking between (~4 to 6 hours) to complete it.
-If more time is needed, please ask.
-
-### We will reject the test if any of the following elements is not present:
-
-* Unit tests
-* The application crashes systematically
-* Configuration changes management
-* No justification for choices made
+## License
+This project is for interview purposes only and is not intended for production distribution. Feel free to explore, modify, and learn from the code.
