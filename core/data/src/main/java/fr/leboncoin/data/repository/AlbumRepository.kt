@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import fr.leboncoin.common.network.ARTDispatchers
 import fr.leboncoin.common.network.Dispatcher
+import fr.leboncoin.common.result.DomainError
 import fr.leboncoin.common.result.LCResult
 import fr.leboncoin.common.result.NetworkError
 import fr.leboncoin.common.result.asResult
@@ -72,9 +73,11 @@ internal class OfflineFirstAlbumRepository @Inject constructor(
             }
             database.albumDao().insertAlbums(entities)
         }.mapToUnitOnSuccess().mapOnError {
-            if (it is HttpException) {
-                NetworkError.HttpError(it.code(), it.message())
-            } else NetworkError.UnknownError(it)
+            when (it) {
+                is DomainError -> it
+                is HttpException -> NetworkError.HttpError(it.code(), it.message())
+                else -> NetworkError.UnknownError(it)
+            }
         }
     }.flowOn(coroutineDispatcher)
 
@@ -101,14 +104,18 @@ internal class OfflineFirstAlbumRepository @Inject constructor(
     override fun getAlbumDetails(id: Long): Flow<LCResult<Album>> = database.albumDao()
         .getAlbumDetails(id)
         .map { albumEntity ->
-            albumEntity ?: throw Exception("Album not found in database for id: $id")
+            albumEntity ?: throw DomainError.NotFound(id)
         }
         .asResult()
         .map { result ->
             result.mapSuccess {
                 albumMapper.toAlbumWithSong(it)
             }.mapOnError {
-                NetworkError.UnknownError(it)
+                when (it) {
+                    is DomainError -> it
+                    is HttpException -> NetworkError.NetworkException(it)
+                    else -> NetworkError.UnknownError(it)
+                }
             }
         }
         .flowOn(coroutineDispatcher)

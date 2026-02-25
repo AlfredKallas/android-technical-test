@@ -63,6 +63,9 @@ android {
         implementation(libs.kotlin.serialization.json)
 
         testImplementation(libs.junit)
+        testImplementation(libs.mockito.kotlin)
+        testImplementation(libs.kotlinx.coroutines.test)
+        testImplementation(libs.turbine)
         androidTestImplementation(libs.androidx.junit) // Useless dependency
         androidTestImplementation(libs.androidx.espresso.core) // Useless dependency
     }
