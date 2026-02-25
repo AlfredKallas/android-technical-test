@@ -1,6 +1,5 @@
 package fr.leboncoin.common.result
 
-import fr.leboncoin.common.result.LCResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -29,7 +28,7 @@ fun <T, R> LCResult<T>.mapSuccess(transform: (T) -> R): LCResult<R> {
     return when (this) {
         is LCResult.Success -> LCResult.Success(transform(data))
         is LCResult.Loading -> LCResult.Loading
-        is LCResult.Error -> LCResult.Error()
+        is LCResult.Error -> LCResult.Error(exception)
     }
 }
 
@@ -37,7 +36,7 @@ fun <T> LCResult<T>.mapToUnitOnSuccess(): LCResult<Unit> {
     return when (this) {
         is LCResult.Success -> LCResult.Success(Unit)
         is LCResult.Loading -> LCResult.Loading
-        is LCResult.Error -> LCResult.Error()
+        is LCResult.Error -> LCResult.Error(exception)
     }
 }
 

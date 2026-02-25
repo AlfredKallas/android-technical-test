@@ -11,7 +11,7 @@ import fr.leboncoin.database.model.AlbumEntity
 interface AlbumDao {
 
     @Query("SELECT * FROM albums where id = :albumId")
-    fun getAlbumDetails(albumId: Long): AlbumEntity
+    suspend fun getAlbumDetails(albumId: Long): AlbumEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAlbums(albums: List<AlbumEntity>)

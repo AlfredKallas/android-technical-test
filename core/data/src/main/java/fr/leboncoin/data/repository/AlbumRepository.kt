@@ -5,6 +5,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import fr.leboncoin.common.network.ARTDispatchers
+import fr.leboncoin.common.network.Dispatcher
 import fr.leboncoin.common.result.LCResult
 import fr.leboncoin.common.result.NetworkError
 import fr.leboncoin.common.result.asResult
@@ -16,9 +18,11 @@ import fr.leboncoin.data.mapper.AlbumMapper
 import fr.leboncoin.data.model.Album
 import fr.leboncoin.database.LeboncoinDatabase
 import fr.leboncoin.network.api.AlbumApiService
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -30,6 +34,7 @@ interface AlbumRepository {
 }
 
 internal class OfflineFirstAlbumRepository @Inject constructor(
+    @Dispatcher(ARTDispatchers.IO) private val coroutineDispatcher: CoroutineDispatcher,
     private val albumApiService: AlbumApiService,
     private val database: LeboncoinDatabase,
     private val albumMapper: AlbumMapper
@@ -63,16 +68,20 @@ internal class OfflineFirstAlbumRepository @Inject constructor(
                 NetworkError.HttpError(it.code(), it.message())
             } else NetworkError.UnknownError(it)
         }
-    }
+    }.flowOn(coroutineDispatcher)
 
     override fun getAlbumDetails(id: Long): Flow<LCResult<Album>> = flow {
-        val album = database.albumDao().getAlbumDetails(id)
-        emit(album)
+        val albumEntity = database.albumDao().getAlbumDetails(id)
+        if (albumEntity != null) {
+            emit(albumEntity)
+        } else {
+            throw Exception("Album not found in database for id: $id")
+        }
     }.asResult().map { result ->
         result.mapSuccess {
             albumMapper.toAlbumWithSong(it)
         }.mapOnError {
             NetworkError.UnknownError(it)
         }
-    }
+    }.flowOn(coroutineDispatcher)
 }
