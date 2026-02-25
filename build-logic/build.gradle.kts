@@ -51,6 +51,14 @@ tasks {
 
 gradlePlugin {
     plugins {
+        register("androidLibraryJacoco") {
+            id = libs.plugins.art.android.library.jacoco.get().pluginId
+            implementationClass = "AndroidLibraryJacocoConventionPlugin"
+        }
+        register("androidApplicationJacoco") {
+            id = libs.plugins.art.android.application.jacoco.get().pluginId
+            implementationClass = "AndroidApplicationJacocoConventionPlugin"
+        }
         register("androidLibraryFlavors") {
             id = libs.plugins.art.android.library.flavors.get().pluginId
             implementationClass = "AndroidLibraryFlavorsConventionPlugin"

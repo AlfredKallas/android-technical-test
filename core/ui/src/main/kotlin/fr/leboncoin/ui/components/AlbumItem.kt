@@ -39,8 +39,9 @@ import com.adevinta.spark.icons.StarOutline
 import fr.leboncoin.ui.extensions.shimmer
 import fr.leboncoin.ui.ui.AlbumUIModel
 import timber.log.Timber
-
 import fr.leboncoin.resources.R
+import androidx.compose.ui.platform.testTag
+import fr.leboncoin.ui.util.TestTags
 
 @OptIn(ExperimentalSparkApi::class)
 @Composable
@@ -52,6 +53,7 @@ fun AlbumItem(
 ) {
     Card(
         modifier = modifier
+            .testTag("${TestTags.ALBUM_ITEM}${album.id}")
             .fillMaxWidth()
             .height(120.dp)
             .padding(horizontal = 16.dp),
@@ -109,7 +111,9 @@ fun AlbumItem(
             }
 
             IconButtonGhost(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier
+                    .testTag(TestTags.FAVOURITE_BUTTON)
+                    .padding(8.dp),
                 icon = if (album.isFavourite) SparkIcons.StarFill else SparkIcons.StarOutline,
                 contentDescription = stringResource(R.string.favourite_content_description),
                 onClick = { onToggleFavourite(album) }

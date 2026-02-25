@@ -1,6 +1,7 @@
 [versions]
 agp = "9.0.1"
 kotlin = "2.3.10"
+jacoco = "0.8.13"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -31,6 +32,7 @@ lifecycleViewmodelNav3 = "2.10.0"
 material3AdaptiveNav3 = "1.3.0-alpha08"
 dependencyAnalysis = "3.5.1"
 mockitoKotlin = "5.4.0"
+robolectric = "4.14.1"
 androidTools = "32.0.0"
 
 
@@ -106,6 +108,7 @@ androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", vers
 androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
 androidx-compose-adaptive-navigation3 = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "material3AdaptiveNav3" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 
 
 
@@ -132,4 +135,7 @@ dependency-analysis = { id = "com.autonomousapps.dependency-analysis", version.r
 
 art-android-application-flavors = { id = "art.android.application.flavors" }
 art-android-library-flavors = { id = "art.android.library.flavors" }
+art-android-application-jacoco = { id = "art.android.application.jacoco" }
+art-android-library-jacoco = { id = "art.android.library.jacoco" }
+art-android-root-jacoco = { id = "art.android.root.jacoco" }
 

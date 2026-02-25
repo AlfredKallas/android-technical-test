@@ -20,8 +20,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import fr.leboncoin.ui.util.TestTags
 import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
@@ -102,6 +104,7 @@ fun AlbumDetailsScreen(
 fun AlbumDetailsSuccessScreen(album: AlbumDetailsUIModel) {
     Column(
         modifier = Modifier
+            .testTag(TestTags.ALBUM_DETAILS_SCREEN)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
@@ -152,7 +155,9 @@ fun AlbumDetailsSuccessScreen(album: AlbumDetailsUIModel) {
 @Composable
 fun AlbumDetailsLoadingScreen() {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .testTag(TestTags.ALBUM_DETAILS_LOADING)
+            .fillMaxSize()
     ) {
         Box(
             modifier = Modifier

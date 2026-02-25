@@ -99,10 +99,34 @@ android-technical-test/
 ```
 The app will automatically pick the device language and display the appropriate localized strings.
 
-## Testing
-- Unit tests live in each module’s `src/test/kotlin` folder.
-- Integration tests use **Turbine** for Flow verification.
-- JaCoCo coverage is aggregated across all modules via the `jacocoMergedReport` task.
+## Testing Strategy
+The project employs a multi-layered testing strategy to ensure reliability and performance:
+- **Unit Tests**: Standard JUnit & Mockito tests for ViewModels, Repositories, and Mappers.
+- **UI Tests (Robolectric)**: Automated Compose UI tests running on the JVM using Robolectric. These tests validate:
+    - **UI States**: Loading, Error, Success, and Empty states for all feature screens.
+    - **Interaction**: Basic user interactions like clicking retry buttons.
+    - **Composition**: Verification of UI component placement and content using centralized `TestTags`.
+- **Flow Verification**: Uses **Turbine** for isolated testing of asynchronous Flow emissions.
+- **Code Coverage**: Integrated **JaCoCo** to track and report coverage across all modules.
+
+### Running Tests
+To run the full suite of unit and UI tests for a specific feature, use the following Gradle commands:
+```bash
+# Albums List feature tests
+./gradlew :feature:albumslist:testDevDebugUnitTest
+
+# Favourites feature tests
+./gradlew :feature:favourites:testDevDebugUnitTest
+
+# Album Details feature tests
+./gradlew :feature:albumDetails:testDevDebugUnitTest
+
+# Run all tests and generate a unified JaCoCo coverage report
+./gradlew jacocoMergedReport
+```
+
+> [!TIP]
+> UI tests are executed on the `devDebug` variant by default. Due to the project's use of API 36, Robolectric tests are configured to emulate **Android SDK 35** via `@Config(sdk = [35])` to ensure environment stability.
 
 ## License
 This project is for interview purposes only and is not intended for production distribution. Feel free to explore, modify, and learn from the code.

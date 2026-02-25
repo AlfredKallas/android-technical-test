@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import com.adevinta.spark.components.buttons.ButtonFilled
 import com.adevinta.spark.components.text.Text
 import fr.leboncoin.resources.R
+import androidx.compose.ui.platform.testTag
+import fr.leboncoin.ui.util.TestTags
 
 @Composable
 fun ErrorScreen(
@@ -23,6 +25,7 @@ fun ErrorScreen(
 ) {
     Column(
         modifier = Modifier
+            .testTag(TestTags.ERROR_SCREEN)
             .fillMaxSize()
             .padding(16.dp)
             .verticalScroll(rememberScrollState()),

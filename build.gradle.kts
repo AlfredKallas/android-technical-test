@@ -9,14 +9,3 @@ plugins {
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.dependency.analysis)
 }
-
-apply(from = "jacoco.gradle.kts")
-
-subprojects {
-    apply(plugin = "com.autonomousapps.dependency-analysis")
-    
-    // Apply JaCoCo only to modules that are not just resource modules
-    if (project.name != "resources") {
-        apply(from = "$rootDir/jacoco.gradle.kts")
-    }
-}
