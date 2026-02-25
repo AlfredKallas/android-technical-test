@@ -1,9 +1,12 @@
-package fr.leboncoin.ui
+package fr.leboncoin
 
 import app.cash.turbine.test
 import fr.leboncoin.common.result.LCResult
+import fr.leboncoin.data.model.Album
 import fr.leboncoin.data.repository.AlbumRepository
 import fr.leboncoin.resources.R
+import fr.leboncoin.ui.AlbumDetailsState
+import fr.leboncoin.ui.AlbumDetailsViewModel
 import fr.leboncoin.ui.mapper.AlbumUIMapper
 import fr.leboncoin.ui.ui.AlbumDetailsUIModel
 import fr.leboncoin.ui.util.UiText
@@ -15,8 +18,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
@@ -46,29 +48,37 @@ class AlbumDetailsViewModelTest {
 
     @Test
     fun `loadAlbumDetails updates state to Success`() = runTest {
-        val album = mock<fr.leboncoin.data.model.Album>()
+        val album = mock<Album>()
         val uiModel = AlbumDetailsUIModel(albumId, 10L, "Title", "url", false)
-        
-        whenever(repository.getAlbumDetails(albumId)).thenReturn(flowOf(LCResult.Loading, LCResult.Success(album)))
+
+        whenever(repository.getAlbumDetails(albumId)).thenReturn(
+            flowOf(
+                LCResult.Loading,
+                LCResult.Success(album)
+            )
+        )
         whenever(albumMapper.toAlbumDetailsUIModel(album)).thenReturn(uiModel)
 
         viewModel.state.test {
-            assertEquals(AlbumDetailsState.Loading, awaitItem()) // Initial from stateIn
+            Assert.assertEquals(AlbumDetailsState.Loading, awaitItem()) // Initial from stateIn
             val state = awaitItem()
-            assertTrue(state is AlbumDetailsState.Success)
-            assertEquals(uiModel, (state as AlbumDetailsState.Success).album)
+            Assert.assertTrue(state is AlbumDetailsState.Success)
+            Assert.assertEquals(uiModel, (state as AlbumDetailsState.Success).album)
         }
     }
 
     @Test
     fun `toggleFavourite emits snackbar event`() = runTest {
         val album = AlbumDetailsUIModel(albumId, 10L, "Title", "url", false)
-        
+
         viewModel.snackbarEvent.test {
             viewModel.toggleFavourite(album)
             val event = awaitItem()
-            assertTrue(event is UiText.StringResource)
-            assertEquals(R.string.added_to_favourites, (event as UiText.StringResource).resId)
+            Assert.assertTrue(event is UiText.StringResource)
+            Assert.assertEquals(
+                R.string.added_to_favourites,
+                (event as UiText.StringResource).resId
+            )
         }
     }
 }
