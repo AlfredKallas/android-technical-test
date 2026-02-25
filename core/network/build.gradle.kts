@@ -22,7 +22,7 @@ android {
             buildConfigField("String", "BASE_URL", "\"https://static.leboncoin.fr/\"")
         }
         release {
-            isMinifyEnabled = true
+        isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

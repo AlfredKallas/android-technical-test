@@ -112,7 +112,7 @@ class AlbumRepositoryTest {
             val result = awaitItem()
             assertTrue(result is LCResult.Error)
             assertTrue((result as LCResult.Error).exception is DomainError.NotFound)
-            assertEquals(1L, ((result as LCResult.Error).exception as DomainError.NotFound).id)
+            assertEquals(1L, ((result).exception as DomainError.NotFound).id)
             awaitComplete()
         }
     }

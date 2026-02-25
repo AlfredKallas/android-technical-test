@@ -1,7 +1,6 @@
 package fr.leboncoin.ui
 
 import app.cash.turbine.test
-import fr.leboncoin.analytics.AnalyticsEvent
 import fr.leboncoin.common.result.LCResult
 import fr.leboncoin.data.repository.AlbumRepository
 import fr.leboncoin.data.repository.AnalyticsEventsRepository
@@ -13,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
