@@ -28,6 +28,41 @@ This is the interview project for **Leboncoin**. The original codebase contained
 | **Navigation** | Manual fragment transactions. | Switched to **Navigation‑Compose (Nav3)** with a single NavHost. |
 | **Adaptive UI** | UI only designed for phones. | Implemented **adaptive UI** using Navigation‑Compose’s `adaptive` support – list‑detail layout works on tablets and larger screens. |
 
+## Architecture: Multi-Module MVVM
+
+The application follows a **Multi-Module MVVM (Model-View-ViewModel)** architecture pattern, organized into three primary layers: **Data → Repository → Presentation**.
+
+### Why Multi-Module MVVM for a Small App?
+While the app is currently small, this architecture was chosen for several critical reasons:
+- **Scalability**: It establishes a robust foundation that allows for seamless expansion as new features are added, without cluttering existing code.
+- **Separation of Concerns**: Each module has a single responsibility, making the codebase easier to navigate, test, and maintain.
+- **Improved Build Times**: By splitting the app into smaller modules, Gradle can perform parallel builds and avoid re-compiling unrelated parts of the app during development.
+- **Testability**: Decoupling the data layer from the UI allows for isolated unit testing of business logic and repository flows.
+
+### Unidirectional Data Flow (UDF)
+This architecture ensures a strict **Unidirectional Data Flow (UDF)**:
+1.  **State** flows down from the ViewModel to the UI.
+2.  **Events** flow up from the UI to the ViewModel.
+3.  **Data** flows from the Data Source (Network/Database) through the Repository to the ViewModel.
+
+By centralizing the UI state within the ViewModel and ensuring data only flows in one direction, we minimize side effects, make the app behavior predictable, and simplify debugging.
+
+## Convention Plugins & Extensibility
+
+This project leverages the **Convention Plugins** pattern (using the `build-logic` directory) to centralize and share Gradle configurations across modules.
+
+### Flavor Plugins
+- **`art.android.application.flavors`**: Standardizes product flavors and build configurations for the application module.
+- **`art.android.library.flavors`**: Ensures consistent flavor configurations across all library modules.
+
+### Extensibility Pattern
+The architecture is designed to be highly extensible. By creating new plugins in the `build-logic` module, you can easily share recurrent configurations and dependencies. For example:
+- **Dependency Bundles**: Group related dependencies (e.g., `Compose`, `Retrofit`, `Hilt`) into a single plugin that can be applied to any module.
+- **Shared Build Logic**: Centralize logic for versioning, code quality tools (like JaCoCo), and ProGuard rules.
+- **Uniform Module Setup**: Create a "base" plugin that applies common plugins (KSP, Hilt, Kotlin) and sets up standard Android configurations (compileSdk, minSdk, JVM target) to reduce boilerplate in `build.gradle.kts` files.
+
+This approach ensures a cleaner, more maintainable build system and adheres to the "Don't Repeat Yourself" (DRY) principle at the build level.
+
 ## Project Structure
 ```
 android-technical-test/
