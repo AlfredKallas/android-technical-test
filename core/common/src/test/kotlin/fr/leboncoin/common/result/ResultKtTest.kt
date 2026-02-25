@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid.core.common.result
+package fr.leboncoin.common.result
 
 import app.cash.turbine.test
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import kotlin.test.assertEquals
 
 class ResultKtTest {
 
@@ -32,17 +32,17 @@ class ResultKtTest {
         }
             .asResult()
             .test {
-                assertEquals(Result.Loading, awaitItem())
-                assertEquals(Result.Success(1), awaitItem())
+                assertEquals(LCResult.Loading, awaitItem())
+                assertEquals(LCResult.Success(1), awaitItem())
 
                 when (val errorResult = awaitItem()) {
-                    is Result.Error -> assertEquals(
+                    is LCResult.Error -> assertEquals(
                         "Test Done",
-                        errorResult.exception.message,
+                        errorResult.exception?.message,
                     )
 
-                    Result.Loading,
-                    is Result.Success,
+                    LCResult.Loading,
+                    is LCResult.Success,
                     -> throw IllegalStateException(
                         "The flow should have emitted an Error Result",
                     )

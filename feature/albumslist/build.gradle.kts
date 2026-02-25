@@ -58,10 +58,10 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.data)
+    api(projects.core.data)
     implementation(projects.core.analytics)
     implementation(projects.core.common)
-    implementation(projects.core.ui)
+    api(projects.core.ui)
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
 
@@ -92,4 +92,9 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
 }

@@ -55,12 +55,10 @@ dependencies {
     implementation(projects.feature.albumslist)
     implementation(projects.feature.albumDetails)
     implementation(projects.feature.favourites)
+    implementation(projects.resources)
     
-    implementation(libs.room.ktx)
+    implementation(libs.room.ktx) // DAGP says unused but often needed for annotation processing or transitive
     implementation(libs.room.paging)
-
-    implementation(libs.paging.runtime)
-    implementation(libs.paging.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -102,7 +100,4 @@ dependencies {
     // Adaptive UI
     implementation(libs.androidx.adaptive)
     implementation(libs.androidx.adaptive.layout)
-    implementation(libs.androidx.adaptive.navigation)
-    implementation(libs.androidx.adaptive.navigation.suite)
-    implementation(libs.androidx.window.size)
 }

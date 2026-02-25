@@ -41,11 +41,10 @@ android {
     }
 
     dependencies {
-        implementation(projects.core.network)
-        implementation(projects.core.database)
-        implementation(projects.core.analytics)
-        implementation(projects.core.common)
-        implementation(projects.core.database)
+        api(projects.core.network)
+        api(projects.core.database)
+        api(projects.core.analytics)
+        api(projects.core.common)
 
         implementation(libs.retrofit.core)
         implementation(libs.retrofit.kotlin.serialization)
