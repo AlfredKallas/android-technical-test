@@ -5,16 +5,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.leboncoin.analytics.AnalyticsEvent
+import fr.leboncoin.common.result.LCResult
 import fr.leboncoin.data.repository.AlbumRepository
 import fr.leboncoin.data.repository.AnalyticsEventsRepository
-import fr.leboncoin.common.result.LCResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel

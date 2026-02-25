@@ -15,7 +15,6 @@
  */
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
@@ -42,12 +41,15 @@ android {
             )
         }
     }
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
     }
 
     buildFeatures {
@@ -59,6 +61,7 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.analytics)
     implementation(projects.core.common)
+    implementation(projects.core.ui)
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
 
@@ -68,6 +71,8 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(platform(libs.spark.bom))
     implementation(libs.spark)
