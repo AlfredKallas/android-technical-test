@@ -28,6 +28,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,34 +51,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.adevinta.spark.components.progress.CircularProgressIndicator
 import com.adevinta.spark.components.scaffold.Scaffold
+import fr.leboncoin.common.result.LCResult
 import fr.leboncoin.ui.pagingdsl.HandlePagingItems
 import fr.leboncoin.ui.pagingdsl.StablePagingItems
 import fr.leboncoin.data.model.Album
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun AlbumsScreen(
-    modifier: Modifier = Modifier,
-    onItemSelected : (Album) -> Unit,
-) {
-    val viewModel: AlbumsViewModel = hiltViewModel()
-    val pagingItems = viewModel.paginationFlow.collectAsLazyPagingItems()
-
-    val stableItems = remember(pagingItems) { StablePagingItems(pagingItems) }
-
-    AlbumsScreen(
-        modifier = modifier,
-        stablePagingItems = stableItems,
-        onItemSelected = onItemSelected
-    )
-}
+import com.adevinta.spark.components.buttons.ButtonFilled
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AlbumsScreen(
     modifier: Modifier = Modifier,
     stablePagingItems: StablePagingItems<Album>,
-    onItemSelected : (Album) -> Unit
+    syncState: LCResult<Unit>,
+    onItemSelected : (Album) -> Unit,
+    onRetry: () -> Unit
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize()
@@ -96,22 +83,36 @@ fun AlbumsScreen(
                 onError { error ->
                     ErrorScreen(
                         message = error.message.orEmpty(),
-                        onRetry = { stablePagingItems.items.retry() }
+                        onRetry = {
+                            stablePagingItems.items.retry()
+                            onRetry()
+                        }
                     )
                 }
-                onSuccess { _ ->
-                    LazyColumn(
-                        state = songsListState,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        onPagingItems(key = { it.id }) { index, song ->
-                            AlbumItem(
-                                album = song,
-                                onItemSelected = onItemSelected,
+                onSuccess { items ->
+                    if (items.items.itemCount == 0) {
+                        when (syncState) {
+                            is LCResult.Loading -> SongsLoadingScreen()
+                            is LCResult.Error -> ErrorScreen(
+                                message = "We couldn't synchronize the albums. Please check your connection.",
+                                onRetry = onRetry
                             )
+                            is LCResult.Success -> EmptyScreen(onRetry = onRetry)
                         }
-                        onAppendItem { CircularProgressIndicator(progress = { 1f }, Modifier.padding(6.dp)) }
+                    } else {
+                        LazyColumn(
+                            state = songsListState,
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            onPagingItems(key = { it.id }) { index, song ->
+                                AlbumItem(
+                                    album = song,
+                                    onItemSelected = onItemSelected,
+                                )
+                            }
+                            onAppendItem { CircularProgressIndicator(progress = { 1f }, Modifier.padding(6.dp)) }
+                        }
                     }
                 }
             }
@@ -243,10 +244,25 @@ fun ErrorScreen(
         Text(
             text = "Error: $message"
         )
-        Button(
+        ButtonFilled(
             onClick = onRetry
         ){
             Text(title)
+        }
+    }
+}
+
+@Composable
+fun EmptyScreen(onRetry: () -> Unit) {
+    Column(modifier = Modifier.fillMaxSize()
+        .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center)
+    {
+        Text(text = "No albums found.", style = MaterialTheme.typography.bodyLarge)
+        Spacer(modifier = Modifier.size(16.dp))
+        ButtonFilled(onClick = onRetry) {
+            Text("Refresh")
         }
     }
 }

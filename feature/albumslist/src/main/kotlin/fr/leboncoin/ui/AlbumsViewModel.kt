@@ -7,6 +7,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.leboncoin.analytics.AnalyticsEvent
 import fr.leboncoin.data.repository.AlbumRepository
 import fr.leboncoin.data.repository.AnalyticsEventsRepository
+import fr.leboncoin.common.result.LCResult
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -19,21 +23,22 @@ class AlbumsViewModel @Inject constructor(
     private val analyticsRepository: AnalyticsEventsRepository
 ) : ViewModel() {
 
-    private fun loadAlbums() {
+    private val _syncState = MutableStateFlow<LCResult<Unit>>(LCResult.Loading)
+    val syncState: StateFlow<LCResult<Unit>> = _syncState.asStateFlow()
+
+    init {
+        loadAlbums()
+    }
+
+    fun loadAlbums() {
         viewModelScope.launch {
-            try {
-                repository.sync()
-                    .launchIn(viewModelScope)
-            } catch (ex: Exception) {
-                Timber.d(ex)
+            repository.sync().collect {
+                _syncState.value = it
             }
         }
     }
 
     val paginationFlow = repository.getAlbums()
-        .onStart {
-            loadAlbums()
-        }
         .cachedIn(viewModelScope)
 
     fun trackEventOnItemSelected(id: String) {
