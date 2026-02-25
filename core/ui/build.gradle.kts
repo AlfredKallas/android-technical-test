@@ -16,45 +16,54 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
     kotlin {
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
 
-    buildFeatures {
-        buildConfig = true
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {
-    implementation(projects.core.data)
-    implementation(projects.core.common)
+    api(projects.core.data)
+    api(projects.core.common)
+    implementation(projects.resources)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling)
-    implementation(libs.androidx.ui.animation)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.runtime)
-
+    implementation(libs.androidx.ui.tooling.preview)
     implementation(platform(libs.spark.bom))
     implementation(libs.spark)
 
-    implementation(libs.paging.runtime)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     implementation(libs.paging.compose)
+    implementation(libs.paging.runtime)
 
     implementation(libs.timber)
 
-    
     //Hilt
     implementation(libs.hilt.android)
-
     ksp(libs.hilt.compiler)
 }

@@ -9,8 +9,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.leboncoin.common.extensions.stateInWhileSubscribed
 import fr.leboncoin.common.result.LCResult
 import fr.leboncoin.data.repository.AlbumRepository
+import fr.leboncoin.resources.R
 import fr.leboncoin.ui.mapper.AlbumUIMapper
 import fr.leboncoin.ui.ui.AlbumDetailsUIModel
+import fr.leboncoin.ui.util.UiText
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -32,8 +34,8 @@ class AlbumDetailsViewModel @AssistedInject constructor(
     @Assisted private val id: Long
 ) : ViewModel() {
 
-    private val _snackbarEvent = MutableSharedFlow<String>()
-    val snackbarEvent: SharedFlow<String> = _snackbarEvent.asSharedFlow()
+    private val _snackbarEvent = MutableSharedFlow<UiText>()
+    val snackbarEvent: SharedFlow<UiText> = _snackbarEvent.asSharedFlow()
 
     private val _state = MutableStateFlow<AlbumDetailsState>(AlbumDetailsState.Loading)
     val state: StateFlow<AlbumDetailsState> = _state
@@ -59,7 +61,8 @@ class AlbumDetailsViewModel @AssistedInject constructor(
     fun toggleFavourite(album: AlbumDetailsUIModel) {
         viewModelScope.launch {
             repository.toggleFavourite(album.id, !album.isFavourite)
-            _snackbarEvent.emit(if (!album.isFavourite) "Added to favourites" else "Removed from favourites")
+            val resId = if (!album.isFavourite) R.string.added_to_favourites else R.string.removed_from_favourites
+            _snackbarEvent.emit(UiText.StringResource(resId))
         }
     }
 

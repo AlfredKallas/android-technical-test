@@ -10,9 +10,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.adevinta.spark.components.buttons.ButtonFilled
 import com.adevinta.spark.components.text.Text
+import fr.leboncoin.resources.R
 
 @Composable
 fun EmptyScreen(text: String, onRetry: (() -> Unit)? = null) {
@@ -25,7 +27,7 @@ fun EmptyScreen(text: String, onRetry: (() -> Unit)? = null) {
         Spacer(modifier = Modifier.size(16.dp))
         if (onRetry != null) {
             ButtonFilled(onClick = onRetry) {
-                Text("Refresh")
+                Text(stringResource(R.string.refresh_button))
             }
         }
     }

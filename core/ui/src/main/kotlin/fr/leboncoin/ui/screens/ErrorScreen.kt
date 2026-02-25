@@ -9,13 +9,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.adevinta.spark.components.buttons.ButtonFilled
 import com.adevinta.spark.components.text.Text
+import fr.leboncoin.resources.R
 
 @Composable
 fun ErrorScreen(
-    title: String = "Retry",
+    title: String? = null,
     message: String,
     onRetry: () -> Unit = {}
 ) {
@@ -28,13 +30,12 @@ fun ErrorScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Error: $message"
+            text = stringResource(R.string.error_prefix, message)
         )
         ButtonFilled(
             onClick = onRetry
         ){
-            Text(title)
+            Text(title ?: stringResource(R.string.retry_button))
         }
     }
 }
-

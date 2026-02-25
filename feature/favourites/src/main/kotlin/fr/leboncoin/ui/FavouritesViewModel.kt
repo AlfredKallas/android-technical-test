@@ -7,8 +7,10 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.leboncoin.data.repository.AlbumRepository
+import fr.leboncoin.resources.R
 import fr.leboncoin.ui.mapper.AlbumUIMapper
 import fr.leboncoin.ui.ui.AlbumUIModel
+import fr.leboncoin.ui.util.UiText
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -23,8 +25,8 @@ class FavouritesViewModel @Inject constructor(
     private val albumMapper: AlbumUIMapper,
 ) : ViewModel() {
 
-    private val _snackbarEvent = MutableSharedFlow<String>()
-    val snackbarEvent: SharedFlow<String> = _snackbarEvent.asSharedFlow()
+    private val _snackbarEvent = MutableSharedFlow<UiText>()
+    val snackbarEvent: SharedFlow<UiText> = _snackbarEvent.asSharedFlow()
 
     val paginationFlow: Flow<PagingData<AlbumUIModel>> = repository.getFavourites()
         .map { pagingData ->
@@ -35,7 +37,8 @@ class FavouritesViewModel @Inject constructor(
     fun toggleFavourite(album: AlbumUIModel) {
         viewModelScope.launch {
             repository.toggleFavourite(album.id, !album.isFavourite)
-            _snackbarEvent.emit(if (!album.isFavourite) "Added to favourites" else "Removed from favourites")
+            val resId = if (!album.isFavourite) R.string.added_to_favourites else R.string.removed_from_favourites
+            _snackbarEvent.emit(UiText.StringResource(resId))
         }
     }
 }

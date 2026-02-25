@@ -16,9 +16,7 @@ fun EntryProviderScope<NavKey>.FavouritesListEntry(
     onItemSelected: (String) -> Unit,
     onBack: () -> Unit,
 ) {
-    entry<FavouritesNavKey>(
-        metadata = ListDetailSceneStrategy.listPane(),
-    ) {
+    entry<FavouritesNavKey> {
         val viewModel = hiltViewModel<FavouritesViewModel>()
         val pagingItems = viewModel.paginationFlow.collectAsLazyPagingItems()
 

@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.adevinta.spark.ExperimentalSparkApi
 import com.adevinta.spark.components.appbar.TopAppBar
@@ -32,31 +33,36 @@ import fr.leboncoin.ui.screens.EmptyScreen
 import fr.leboncoin.ui.screens.ErrorScreen
 import fr.leboncoin.ui.ui.AlbumUIModel
 
+import androidx.compose.ui.res.stringResource
+import fr.leboncoin.resources.R
+import fr.leboncoin.ui.util.UiText
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalSparkApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun FavouritesScreen(
     stablePagingItems: StablePagingItems<AlbumUIModel>,
-    snackbarEvent: kotlinx.coroutines.flow.SharedFlow<String>,
+    snackbarEvent: kotlinx.coroutines.flow.SharedFlow<UiText>,
     onItemSelected: (AlbumUIModel) -> Unit,
     onToggleFavourite: (AlbumUIModel) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = LocalSnackbarHostState.current
+    val context = LocalContext.current
     LaunchedEffect(snackbarEvent) {
         snackbarEvent.collect {
-            snackbarHostState.showSnackbar(it)
+            snackbarHostState.showSnackbar(it.asString(context))
         }
     }
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("Favourites") },
+                title = { Text(stringResource(R.string.favourites_title)) },
                 navigationIcon = {
                     IconButtonGhost(
                         icon = SparkIcons.ArrowLeft,
-                        contentDescription = "Back",
+                        contentDescription = stringResource(R.string.back_content_description),
                         onClick = onBack
                     )
                 }
@@ -85,7 +91,7 @@ fun FavouritesScreen(
                 }
                 onEmpty {
                     EmptyScreen(
-                        text = "No favourites yet"
+                        text = stringResource(R.string.no_favourites)
                     )
                 }
                 onSuccess { _ ->

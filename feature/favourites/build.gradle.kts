@@ -60,6 +60,7 @@ android {
 dependencies {
     api(projects.core.data)
     api(projects.core.ui)
+    implementation(projects.resources)
     
     implementation(libs.room.ktx)
     implementation(libs.room.paging)

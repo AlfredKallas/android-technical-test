@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -38,6 +39,8 @@ import com.adevinta.spark.icons.StarOutline
 import fr.leboncoin.ui.extensions.shimmer
 import fr.leboncoin.ui.ui.AlbumUIModel
 import timber.log.Timber
+
+import fr.leboncoin.resources.R
 
 @OptIn(ExperimentalSparkApi::class)
 @Composable
@@ -97,10 +100,10 @@ fun AlbumItem(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     ChipTinted(
-                        text = "Album #${album.albumId}"
+                        text = stringResource(R.string.album_id_label, album.albumId)
                     )
                     ChipTinted(
-                        text = "Track #${album.id}"
+                        text = stringResource(R.string.track_id_label, album.id)
                     )
                 }
             }
@@ -108,7 +111,7 @@ fun AlbumItem(
             IconButtonGhost(
                 modifier = Modifier.padding(8.dp),
                 icon = if (album.isFavourite) SparkIcons.StarFill else SparkIcons.StarOutline,
-                contentDescription = "Favourite",
+                contentDescription = stringResource(R.string.favourite_content_description),
                 onClick = { onToggleFavourite(album) }
             )
         }

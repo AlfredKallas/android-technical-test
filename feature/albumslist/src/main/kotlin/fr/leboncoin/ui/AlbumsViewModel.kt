@@ -6,11 +6,14 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.leboncoin.analytics.AnalyticsEvent
+import fr.leboncoin.common.extensions.stateInWhileSubscribed
 import fr.leboncoin.common.result.LCResult
 import fr.leboncoin.data.repository.AlbumRepository
 import fr.leboncoin.data.repository.AnalyticsEventsRepository
+import fr.leboncoin.resources.R
 import fr.leboncoin.ui.mapper.AlbumUIMapper
 import fr.leboncoin.ui.ui.AlbumUIModel
+import fr.leboncoin.ui.util.UiText
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -35,10 +38,14 @@ class AlbumsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _syncState = MutableStateFlow<SyncState>(SyncState.Loading)
-    val syncState: StateFlow<SyncState> = _syncState.asStateFlow()
+    val syncState: StateFlow<SyncState> = _syncState.
+        stateInWhileSubscribed(
+            initialValue = SyncState.Loading,
+            scope = viewModelScope
+        )
 
-    private val _snackbarEvent = MutableSharedFlow<String>()
-    val snackbarEvent: SharedFlow<String> = _snackbarEvent.asSharedFlow()
+    private val _snackbarEvent = MutableSharedFlow<UiText>()
+    val snackbarEvent: SharedFlow<UiText> = _snackbarEvent.asSharedFlow()
 
     init {
         loadAlbums()
@@ -76,7 +83,8 @@ class AlbumsViewModel @Inject constructor(
     fun toggleFavourite(album: AlbumUIModel) {
         viewModelScope.launch {
             repository.toggleFavourite(album.id, !album.isFavourite)
-            _snackbarEvent.emit(if (!album.isFavourite) "Added to favourites" else "Removed from favourites")
+            val resId = if (!album.isFavourite) R.string.added_to_favourites else R.string.removed_from_favourites
+            _snackbarEvent.emit(UiText.StringResource(resId))
         }
     }
 }

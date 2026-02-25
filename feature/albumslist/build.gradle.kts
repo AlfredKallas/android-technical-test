@@ -62,6 +62,7 @@ dependencies {
     implementation(projects.core.analytics)
     implementation(projects.core.common)
     api(projects.core.ui)
+    implementation(projects.resources)
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
 

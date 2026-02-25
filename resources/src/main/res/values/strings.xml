@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Android RecruitmentTest App</string>
+    <string name="albums_title">Albums</string>
+    <string name="favourites_title">Favourites</string>
+    <string name="back_content_description">Back</string>
+    <string name="favourite_content_description">Favourite</string>
+    <string name="no_favourites">No favourites yet</string>
+    <string name="no_albums">No albums found.</string>
+    <string name="added_to_favourites">Added to favourites</string>
+    <string name="removed_from_favourites">Removed from favourites</string>
+    <string name="album_id_label">Album #%1$d</string>
+    <string name="track_id_label">Track #%1$d</string>
+    <string name="retry_button">Retry</string>
+    <string name="refresh_button">Refresh</string>
+    <string name="error_prefix">Error: %1$s</string>
 </resources>

@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
@@ -37,25 +39,28 @@ import com.adevinta.spark.icons.ArrowLeft
 import com.adevinta.spark.icons.SparkIcons
 import com.adevinta.spark.icons.StarFill
 import com.adevinta.spark.icons.StarOutline
+import fr.leboncoin.resources.R
 import fr.leboncoin.ui.compositionlocal.LocalSnackbarHostState
 import fr.leboncoin.ui.extensions.shimmer
 import fr.leboncoin.ui.screens.ErrorScreen
 import fr.leboncoin.ui.ui.AlbumDetailsUIModel
+import fr.leboncoin.ui.util.UiText
 
 @OptIn(ExperimentalSparkApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumDetailsScreen(
     albumDetailsState: AlbumDetailsState,
-    snackbarEvent: kotlinx.coroutines.flow.SharedFlow<String>,
+    snackbarEvent: kotlinx.coroutines.flow.SharedFlow<UiText>,
     modifier: Modifier = Modifier,
     onToggleFavourite: (AlbumDetailsUIModel) -> Unit = {},
     onBack: () -> Unit = {},
     onRetry: () -> Unit = {}
 ) {
     val snackbarHostState = LocalSnackbarHostState.current
-    androidx.compose.runtime.LaunchedEffect(snackbarEvent) {
+    val context = LocalContext.current
+    LaunchedEffect(snackbarEvent) {
         snackbarEvent.collect {
-            snackbarHostState.showSnackbar(it)
+            snackbarHostState.showSnackbar(it.asString(context))
         }
     }
     Scaffold(
@@ -69,14 +74,14 @@ fun AlbumDetailsScreen(
                     navigationIcon = {
                         IconButtonGhost(
                             icon = SparkIcons.ArrowLeft,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.back_content_description),
                             onClick = onBack
                         )
                     },
                     actions = {
                         IconButtonGhost(
                             icon = if (albumDetailsState.album.isFavourite) SparkIcons.StarFill else SparkIcons.StarOutline,
-                            contentDescription = "Favourite",
+                            contentDescription = stringResource(R.string.favourite_content_description),
                             onClick = { onToggleFavourite(albumDetailsState.album) }
                         )
                     }
@@ -140,8 +145,8 @@ fun AlbumDetailsSuccessScreen(album: AlbumDetailsUIModel) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                ChipTinted(text = "Album #${album.albumId}")
-                ChipTinted(text = "Track #${album.id}")
+                ChipTinted(text = stringResource(R.string.album_id_label, album.albumId))
+                ChipTinted(text = stringResource(R.string.track_id_label, album.id))
             }
         }
     }

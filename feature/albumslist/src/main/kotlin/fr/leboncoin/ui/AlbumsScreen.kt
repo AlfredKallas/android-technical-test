@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.adevinta.spark.ExperimentalSparkApi
 import com.adevinta.spark.components.appbar.TopAppBar
@@ -33,33 +34,38 @@ import fr.leboncoin.ui.screens.ErrorScreen
 import fr.leboncoin.ui.ui.AlbumUIModel
 import kotlinx.coroutines.flow.SharedFlow
 
+import androidx.compose.ui.res.stringResource
+import fr.leboncoin.resources.R
+import fr.leboncoin.ui.util.UiText
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalSparkApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumsScreen(
     modifier: Modifier = Modifier,
     stablePagingItems: StablePagingItems<AlbumUIModel>,
     syncState: SyncState,
-    snackbarEvent: SharedFlow<String>,
+    snackbarEvent: SharedFlow<UiText>,
     onItemSelected : (AlbumUIModel) -> Unit,
     onToggleFavourite: (AlbumUIModel) -> Unit,
     onFavouritesClick: () -> Unit,
     onRetry: () -> Unit
 ) {
     val snackbarHostState = LocalSnackbarHostState.current
+    val context = LocalContext.current
     LaunchedEffect(snackbarEvent) {
         snackbarEvent.collect {
-            snackbarHostState.showSnackbar(it)
+            snackbarHostState.showSnackbar(it.asString(context))
         }
     }
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("Albums") },
+                title = { Text(stringResource(R.string.albums_title)) },
                 actions = {
                     IconButtonGhost(
                         icon = SparkIcons.StarOutline,
-                        contentDescription = "Favourites",
+                        contentDescription = stringResource(R.string.favourites_title),
                         onClick = onFavouritesClick
                     )
                 }
@@ -94,7 +100,7 @@ fun AlbumsScreen(
                             message = syncState.message,
                             onRetry = onRetry
                         )
-                        is SyncState.Success -> EmptyScreen(text = "No albums found.", onRetry = onRetry)
+                        is SyncState.Success -> EmptyScreen(text = stringResource(R.string.no_albums), onRetry = onRetry)
                     }
                 }
                 onSuccess { _ ->
