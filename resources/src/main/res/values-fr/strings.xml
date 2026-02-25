@@ -2,6 +2,7 @@
     <string name="app_name">Android RecruitmentTest App</string>
     <string name="albums_title">Albums</string>
     <string name="favourites_title">Favoris</string>
+    <string name="albums_Details_title">Detail Album</string>
     <string name="back_content_description">Retour</string>
     <string name="favourite_content_description">Favori</string>
     <string name="no_favourites">Aucun favori pour le moment</string>

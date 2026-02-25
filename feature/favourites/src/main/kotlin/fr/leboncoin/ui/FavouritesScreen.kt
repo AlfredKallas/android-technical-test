@@ -10,10 +10,9 @@ import androidx.compose.foundation.lazy.layout.LazyLayoutCacheWindow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.adevinta.spark.ExperimentalSparkApi
 import com.adevinta.spark.components.appbar.TopAppBar
@@ -24,6 +23,7 @@ import com.adevinta.spark.components.snackbars.SnackbarHost
 import com.adevinta.spark.components.text.Text
 import com.adevinta.spark.icons.ArrowLeft
 import com.adevinta.spark.icons.SparkIcons
+import fr.leboncoin.resources.R
 import fr.leboncoin.ui.components.AlbumItem
 import fr.leboncoin.ui.components.AlbumsLoadingScreen
 import fr.leboncoin.ui.compositionlocal.LocalSnackbarHostState
@@ -33,27 +33,16 @@ import fr.leboncoin.ui.screens.EmptyScreen
 import fr.leboncoin.ui.screens.ErrorScreen
 import fr.leboncoin.ui.ui.AlbumUIModel
 
-import androidx.compose.ui.res.stringResource
-import fr.leboncoin.resources.R
-import fr.leboncoin.ui.util.UiText
-
 @OptIn(ExperimentalFoundationApi::class, ExperimentalSparkApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun FavouritesScreen(
     stablePagingItems: StablePagingItems<AlbumUIModel>,
-    snackbarEvent: kotlinx.coroutines.flow.SharedFlow<UiText>,
     onItemSelected: (AlbumUIModel) -> Unit,
     onToggleFavourite: (AlbumUIModel) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = LocalSnackbarHostState.current
-    val context = LocalContext.current
-    LaunchedEffect(snackbarEvent) {
-        snackbarEvent.collect {
-            snackbarHostState.showSnackbar(it.asString(context))
-        }
-    }
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {

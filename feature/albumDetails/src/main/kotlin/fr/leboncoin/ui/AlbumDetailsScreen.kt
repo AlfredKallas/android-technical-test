@@ -13,7 +13,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,32 +43,24 @@ import fr.leboncoin.ui.compositionlocal.LocalSnackbarHostState
 import fr.leboncoin.ui.extensions.shimmer
 import fr.leboncoin.ui.screens.ErrorScreen
 import fr.leboncoin.ui.ui.AlbumDetailsUIModel
-import fr.leboncoin.ui.util.UiText
 
 @OptIn(ExperimentalSparkApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumDetailsScreen(
     albumDetailsState: AlbumDetailsState,
-    snackbarEvent: kotlinx.coroutines.flow.SharedFlow<UiText>,
     modifier: Modifier = Modifier,
     onToggleFavourite: (AlbumDetailsUIModel) -> Unit = {},
     onBack: () -> Unit = {},
     onRetry: () -> Unit = {}
 ) {
     val snackbarHostState = LocalSnackbarHostState.current
-    val context = LocalContext.current
-    LaunchedEffect(snackbarEvent) {
-        snackbarEvent.collect {
-            snackbarHostState.showSnackbar(it.asString(context))
-        }
-    }
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             if (albumDetailsState is AlbumDetailsState.Success) {
                 TopAppBar(
                     title = {
-                        Text(text = albumDetailsState.album.title)
+                        Text(text = stringResource(R.string.albums_Details_title))
                     },
                     navigationIcon = {
                         IconButtonGhost(
@@ -114,6 +105,12 @@ fun AlbumDetailsSuccessScreen(album: AlbumDetailsUIModel) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
+        Text(
+            modifier = Modifier.padding(8.dp),
+            text = album.title,
+            style = SparkTheme.typography.headline1
+        )
+
         var loading by remember { mutableStateOf(true) }
 
         AsyncImage(
