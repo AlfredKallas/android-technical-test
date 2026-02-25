@@ -120,10 +120,21 @@ To run the full suite of unit and UI tests for a specific feature, use the follo
 
 # Album Details feature tests
 ./gradlew :feature:albumDetails:testDevDebugUnitTest
-
-# Run all tests and generate a unified JaCoCo coverage report
-./gradlew jacocoMergedReport
 ```
+
+## Code Coverage
+
+The project is configured to generate code coverage reports for each module using JaCoCo. 
+
+To generate a coverage report for a specific module, run the `create<Variant>CombinedCoverageReport` task. For example, to generate a report for the `devDebug` variant of all modules, run:
+
+```bash
+./gradlew createDevDebugCombinedCoverageReport
+```
+
+The HTML report will be generated in each module's build directory: `feature/albumslist/build/reports/jacoco/createDevDebugCombinedCoverageReport/html/index.html`.
+
+I would have liked to be able to aggregate the resuklts into one but was not able to do it.
 
 > [!TIP]
 > UI tests are executed on the `devDebug` variant by default. Due to the project's use of API 36, Robolectric tests are configured to emulate **Android SDK 35** via `@Config(sdk = [35])` to ensure environment stability.
