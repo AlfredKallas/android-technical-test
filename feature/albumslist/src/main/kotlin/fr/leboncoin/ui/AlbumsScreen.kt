@@ -10,51 +10,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.layout.LazyLayoutCacheWindow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.adevinta.spark.components.progress.CircularProgressIndicator
 import com.adevinta.spark.components.scaffold.Scaffold
-import fr.leboncoin.common.result.LCResult
-import fr.leboncoin.data.model.Album
 import fr.leboncoin.ui.pagingdsl.HandlePagingItems
 import fr.leboncoin.ui.pagingdsl.StablePagingItems
 import fr.leboncoin.ui.screens.EmptyScreen
 import fr.leboncoin.ui.screens.ErrorScreen
+import fr.leboncoin.ui.ui.AlbumUIModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AlbumsScreen(
     modifier: Modifier = Modifier,
-    onItemSelected : (Album) -> Unit,
-) {
-    val viewModel: AlbumsViewModel = hiltViewModel()
-    val pagingItems = viewModel.paginationFlow.collectAsLazyPagingItems()
-    val syncState by viewModel.syncState.collectAsState()
-
-    val stableItems = remember(pagingItems) { StablePagingItems(pagingItems) }
-
-    AlbumsScreen(
-        modifier = modifier,
-        stablePagingItems = stableItems,
-        syncState = syncState,
-        onItemSelected = onItemSelected,
-        onRetry = { viewModel.loadAlbums() }
-    )
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun AlbumsScreen(
-    modifier: Modifier = Modifier,
-    stablePagingItems: StablePagingItems<Album>,
-    syncState: LCResult<Unit>,
-    onItemSelected : (Album) -> Unit,
+    stablePagingItems: StablePagingItems<AlbumUIModel>,
+    syncState: SyncState,
+    onItemSelected : (AlbumUIModel) -> Unit,
     onRetry: () -> Unit
 ) {
     Scaffold(
@@ -82,12 +55,12 @@ fun AlbumsScreen(
                 }
                 onEmpty {
                     when (syncState) {
-                        is LCResult.Loading -> SongsLoadingScreen()
-                        is LCResult.Error -> ErrorScreen(
-                            message = "We couldn't synchronize the albums. Please check your connection.",
+                        is SyncState.Loading -> SongsLoadingScreen()
+                        is SyncState.Error -> ErrorScreen(
+                            message = syncState.message,
                             onRetry = onRetry
                         )
-                        is LCResult.Success -> EmptyScreen(onRetry = onRetry)
+                        is SyncState.Success -> EmptyScreen(onRetry = onRetry)
                     }
                 }
                 onSuccess { _ ->

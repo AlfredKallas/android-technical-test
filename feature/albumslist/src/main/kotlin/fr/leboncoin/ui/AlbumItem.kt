@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,16 +28,17 @@ import coil3.request.crossfade
 import com.adevinta.spark.ExperimentalSparkApi
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.card.Card
-import com.adevinta.spark.components.chips.Chip
 import com.adevinta.spark.components.chips.ChipTinted
-import fr.leboncoin.data.model.Album
+import com.adevinta.spark.components.text.Text
 import fr.leboncoin.ui.extensions.shimmer
+import fr.leboncoin.ui.ui.AlbumUIModel
+import timber.log.Timber
 
 @OptIn(ExperimentalSparkApi::class)
 @Composable
 fun AlbumItem(
-    album: Album,
-    onItemSelected : (Album) -> Unit,
+    album: AlbumUIModel,
+    onItemSelected : (AlbumUIModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -60,10 +60,9 @@ fun AlbumItem(
                     loading = false
                 },
                 onError = {
-                    println("The image was not loaded because of: ${it.result.throwable.message}")
+                    Timber.d("The image was not loaded because of: ${it.result.throwable.message}")
                     loading = false
                 },
-//                error = painterResource(R.drawable.placeholder_image),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(album.thumbnailUrl)
                     .crossfade(true)
