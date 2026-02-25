@@ -15,16 +15,18 @@ import com.adevinta.spark.components.buttons.ButtonFilled
 import com.adevinta.spark.components.text.Text
 
 @Composable
-fun EmptyScreen(onRetry: () -> Unit) {
+fun EmptyScreen(text: String, onRetry: (() -> Unit)? = null) {
     Column(modifier = Modifier.fillMaxSize()
         .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center)
     {
-        Text(text = "No albums found.", style = MaterialTheme.typography.bodyLarge)
+        Text(text = text, style = MaterialTheme.typography.bodyLarge)
         Spacer(modifier = Modifier.size(16.dp))
-        ButtonFilled(onClick = onRetry) {
-            Text("Refresh")
+        if (onRetry != null) {
+            ButtonFilled(onClick = onRetry) {
+                Text("Refresh")
+            }
         }
     }
 }

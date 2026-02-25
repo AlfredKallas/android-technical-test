@@ -9,5 +9,6 @@ data class AlbumEntity(
     val albumId: Long,
     val title: String,
     val url: String,
-    val thumbnailUrl: String
+    val thumbnailUrl: String,
+    val isFavourite: Boolean = false
 )

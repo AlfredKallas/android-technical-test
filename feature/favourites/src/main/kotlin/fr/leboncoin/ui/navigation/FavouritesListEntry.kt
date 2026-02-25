@@ -2,43 +2,36 @@ package fr.leboncoin.ui.navigation
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import androidx.paging.compose.collectAsLazyPagingItems
-import fr.leboncoin.ui.AlbumsScreen
-import fr.leboncoin.ui.AlbumsViewModel
+import fr.leboncoin.ui.FavouritesScreen
+import fr.leboncoin.ui.FavouritesViewModel
 import fr.leboncoin.ui.pagingdsl.StablePagingItems
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-fun EntryProviderScope<NavKey>.AlbumsListEntry(
+fun EntryProviderScope<NavKey>.FavouritesListEntry(
     onItemSelected: (String) -> Unit,
-    onFavouritesClick: () -> Unit,
+    onBack: () -> Unit,
 ) {
-    entry<AlbumsNavKey>(
+    entry<FavouritesNavKey>(
         metadata = ListDetailSceneStrategy.listPane(),
     ) {
-        val viewModel = hiltViewModel<AlbumsViewModel>()
+        val viewModel = hiltViewModel<FavouritesViewModel>()
         val pagingItems = viewModel.paginationFlow.collectAsLazyPagingItems()
 
         val stableItems = remember(pagingItems) { StablePagingItems(pagingItems) }
 
-        val syncState by viewModel.syncState.collectAsStateWithLifecycle()
-
-        AlbumsScreen(
+        FavouritesScreen(
             stablePagingItems = stableItems,
-            syncState = syncState,
             snackbarEvent = viewModel.snackbarEvent,
             onItemSelected = {
-                viewModel.trackEventOnItemSelected(it.id.toString())
                 onItemSelected.invoke(it.id.toString())
             },
             onToggleFavourite = viewModel::toggleFavourite,
-            onFavouritesClick = onFavouritesClick,
-            onRetry = viewModel::loadAlbums
+            onBack = onBack
         )
     }
 }

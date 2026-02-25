@@ -47,6 +47,11 @@ dependencies {
     implementation(platform(libs.spark.bom))
     implementation(libs.spark)
 
+    implementation(libs.paging.runtime)
+    implementation(libs.paging.compose)
+
+    implementation(libs.timber)
+
     
     //Hilt
     implementation(libs.hilt.android)

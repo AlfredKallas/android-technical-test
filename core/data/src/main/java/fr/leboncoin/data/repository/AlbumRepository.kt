@@ -30,6 +30,8 @@ import javax.inject.Inject
 interface AlbumRepository {
     fun getAlbums(): Flow<PagingData<Album>>
     fun getAlbumDetails(id: Long): Flow<LCResult<Album>>
+    fun getFavourites(): Flow<PagingData<Album>>
+    suspend fun toggleFavourite(id: Long, isFavourite: Boolean)
     fun sync(): Flow<LCResult<Unit>>
 }
 
@@ -58,11 +60,17 @@ internal class OfflineFirstAlbumRepository @Inject constructor(
     }
 
     override fun sync(): Flow<LCResult<Unit>> = flow {
-        val albums = albumApiService.getAlbums()
-        emit(albums)
+        val remoteAlbums = albumApiService.getAlbums()
+        emit(remoteAlbums)
     }.asResult().map { result ->
-        result.onSuccess {
-            database.albumDao().insertAlbums(albumMapper.toListAlbumEntity(it))
+        result.onSuccess { dtoList ->
+            val favouriteIds = database.albumDao().getFavouriteIds().toSet()
+            val entities = albumMapper.toListAlbumEntity(dtoList).map { entity ->
+                if (favouriteIds.contains(entity.id)) {
+                    entity.copy(isFavourite = true)
+                } else entity
+            }
+            database.albumDao().insertAlbums(entities)
         }.mapToUnitOnSuccess().mapOnError {
             if (it is HttpException) {
                 NetworkError.HttpError(it.code(), it.message())
@@ -70,18 +78,38 @@ internal class OfflineFirstAlbumRepository @Inject constructor(
         }
     }.flowOn(coroutineDispatcher)
 
-    override fun getAlbumDetails(id: Long): Flow<LCResult<Album>> = flow {
-        val albumEntity = database.albumDao().getAlbumDetails(id)
-        if (albumEntity != null) {
-            emit(albumEntity)
-        } else {
-            throw Exception("Album not found in database for id: $id")
+    override fun getFavourites(): Flow<PagingData<Album>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                prefetchDistance = 5,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { database.albumDao().getFavouritesPaged() }
+        ).flow
+            .map { pagingData ->
+                pagingData.map { albumEntity ->
+                    albumMapper.toAlbumWithSong(albumEntity)
+                }
+            }
+    }
+
+    override suspend fun toggleFavourite(id: Long, isFavourite: Boolean) {
+        database.albumDao().updateFavourite(id, isFavourite)
+    }
+
+    override fun getAlbumDetails(id: Long): Flow<LCResult<Album>> = database.albumDao()
+        .getAlbumDetails(id)
+        .map { albumEntity ->
+            albumEntity ?: throw Exception("Album not found in database for id: $id")
         }
-    }.asResult().map { result ->
-        result.mapSuccess {
-            albumMapper.toAlbumWithSong(it)
-        }.mapOnError {
-            NetworkError.UnknownError(it)
+        .asResult()
+        .map { result ->
+            result.mapSuccess {
+                albumMapper.toAlbumWithSong(it)
+            }.mapOnError {
+                NetworkError.UnknownError(it)
+            }
         }
-    }.flowOn(coroutineDispatcher)
+        .flowOn(coroutineDispatcher)
 }

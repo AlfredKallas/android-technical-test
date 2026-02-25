@@ -20,7 +20,8 @@ class AlbumMapperImpl @Inject constructor() : AlbumMapper {
             albumId = albumWithSongsEntity.albumId,
             title = albumWithSongsEntity.title,
             url = albumWithSongsEntity.url,
-            thumbnailUrl = albumWithSongsEntity.thumbnailUrl
+            thumbnailUrl = albumWithSongsEntity.thumbnailUrl,
+            isFavourite = albumWithSongsEntity.isFavourite
         )
 
     override fun toAlbumEntity(albumDto: AlbumDto): AlbumEntity =

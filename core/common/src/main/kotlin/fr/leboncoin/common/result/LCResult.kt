@@ -53,17 +53,3 @@ suspend fun <T> LCResult<T>.onSuccess(block: suspend (T) -> Unit): LCResult<T>  
     }
     return this
 }
-
-fun <T> LCResult<T>.onError(block: (Throwable?) -> Unit): LCResult<T> {
-    if (this is LCResult.Error) {
-        block(exception)
-    }
-    return this
-}
-
-fun <T> LCResult<T>.onLoading(block: () -> Unit): LCResult<T> {
-    if (this is LCResult.Loading) {
-        block()
-    }
-    return this
-}

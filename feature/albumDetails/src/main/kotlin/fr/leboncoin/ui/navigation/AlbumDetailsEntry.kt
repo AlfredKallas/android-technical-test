@@ -13,7 +13,9 @@ import fr.leboncoin.ui.AlbumDetailsScreen
 import fr.leboncoin.ui.AlbumDetailsViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-fun EntryProviderScope<NavKey>.AlbumDetailsEntry() {
+fun EntryProviderScope<NavKey>.AlbumDetailsEntry(
+    onBack: () -> Unit,
+) {
     entry<AlbumDetailsNavKey>(
         metadata = ListDetailSceneStrategy.detailPane(),
     ) { key ->
@@ -29,6 +31,9 @@ fun EntryProviderScope<NavKey>.AlbumDetailsEntry() {
         AlbumDetailsScreen(
             modifier = Modifier.fillMaxSize(),
             albumDetailsState = state,
+            snackbarEvent = viewModel.snackbarEvent,
+            onToggleFavourite = viewModel::toggleFavourite,
+            onBack = onBack,
             onRetry = {
                 viewModel.loadAlbumDetails()
             }

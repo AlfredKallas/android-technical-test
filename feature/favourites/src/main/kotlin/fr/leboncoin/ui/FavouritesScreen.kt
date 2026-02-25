@@ -21,8 +21,8 @@ import com.adevinta.spark.components.progress.CircularProgressIndicator
 import com.adevinta.spark.components.scaffold.Scaffold
 import com.adevinta.spark.components.snackbars.SnackbarHost
 import com.adevinta.spark.components.text.Text
+import com.adevinta.spark.icons.ArrowLeft
 import com.adevinta.spark.icons.SparkIcons
-import com.adevinta.spark.icons.StarOutline
 import fr.leboncoin.ui.components.AlbumItem
 import fr.leboncoin.ui.components.AlbumsLoadingScreen
 import fr.leboncoin.ui.compositionlocal.LocalSnackbarHostState
@@ -31,19 +31,16 @@ import fr.leboncoin.ui.pagingdsl.StablePagingItems
 import fr.leboncoin.ui.screens.EmptyScreen
 import fr.leboncoin.ui.screens.ErrorScreen
 import fr.leboncoin.ui.ui.AlbumUIModel
-import kotlinx.coroutines.flow.SharedFlow
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalSparkApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun AlbumsScreen(
-    modifier: Modifier = Modifier,
+fun FavouritesScreen(
     stablePagingItems: StablePagingItems<AlbumUIModel>,
-    syncState: SyncState,
-    snackbarEvent: SharedFlow<String>,
-    onItemSelected : (AlbumUIModel) -> Unit,
+    snackbarEvent: kotlinx.coroutines.flow.SharedFlow<String>,
+    onItemSelected: (AlbumUIModel) -> Unit,
     onToggleFavourite: (AlbumUIModel) -> Unit,
-    onFavouritesClick: () -> Unit,
-    onRetry: () -> Unit
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val snackbarHostState = LocalSnackbarHostState.current
     LaunchedEffect(snackbarEvent) {
@@ -55,12 +52,12 @@ fun AlbumsScreen(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("Albums") },
-                actions = {
+                title = { Text("Favourites") },
+                navigationIcon = {
                     IconButtonGhost(
-                        icon = SparkIcons.StarOutline,
-                        contentDescription = "Favourites",
-                        onClick = onFavouritesClick
+                        icon = SparkIcons.ArrowLeft,
+                        contentDescription = "Back",
+                        onClick = onBack
                     )
                 }
             )
@@ -83,19 +80,13 @@ fun AlbumsScreen(
                         message = error.message.orEmpty(),
                         onRetry = {
                             stablePagingItems.items.retry()
-                            onRetry()
                         }
                     )
                 }
                 onEmpty {
-                    when (syncState) {
-                        is SyncState.Loading -> AlbumsLoadingScreen()
-                        is SyncState.Error -> ErrorScreen(
-                            message = syncState.message,
-                            onRetry = onRetry
-                        )
-                        is SyncState.Success -> EmptyScreen(text = "No albums found.", onRetry = onRetry)
-                    }
+                    EmptyScreen(
+                        text = "No favourites yet"
+                    )
                 }
                 onSuccess { _ ->
                     LazyColumn(
@@ -110,11 +101,15 @@ fun AlbumsScreen(
                                 onToggleFavourite = onToggleFavourite
                             )
                         }
-                        onAppendItem { CircularProgressIndicator(progress = { 1f }, Modifier.padding(6.dp)) }
+                        onAppendItem {
+                            CircularProgressIndicator(
+                                progress = { 1f },
+                                Modifier.padding(6.dp)
+                            )
+                        }
                     }
                 }
             }
         }
     }
 }
-

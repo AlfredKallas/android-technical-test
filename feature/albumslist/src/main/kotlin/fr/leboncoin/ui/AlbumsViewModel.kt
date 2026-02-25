@@ -10,8 +10,12 @@ import fr.leboncoin.common.result.LCResult
 import fr.leboncoin.data.repository.AlbumRepository
 import fr.leboncoin.data.repository.AnalyticsEventsRepository
 import fr.leboncoin.ui.mapper.AlbumUIMapper
+import fr.leboncoin.ui.ui.AlbumUIModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -32,6 +36,9 @@ class AlbumsViewModel @Inject constructor(
 
     private val _syncState = MutableStateFlow<SyncState>(SyncState.Loading)
     val syncState: StateFlow<SyncState> = _syncState.asStateFlow()
+
+    private val _snackbarEvent = MutableSharedFlow<String>()
+    val snackbarEvent: SharedFlow<String> = _snackbarEvent.asSharedFlow()
 
     init {
         loadAlbums()
@@ -66,5 +73,10 @@ class AlbumsViewModel @Inject constructor(
         )
     }
 
-
+    fun toggleFavourite(album: AlbumUIModel) {
+        viewModelScope.launch {
+            repository.toggleFavourite(album.id, !album.isFavourite)
+            _snackbarEvent.emit(if (!album.isFavourite) "Added to favourites" else "Removed from favourites")
+        }
+    }
 }

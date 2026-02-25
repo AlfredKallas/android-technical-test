@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyScopeMarker
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.derivedStateOf
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -35,7 +35,7 @@ class PagingHandlerScope<T : Any>(
     @Composable
     fun onRefresh(body: @Composable () -> Unit) {
         if (handled) return
-        if (loadState.refresh is LoadState.Loading) {
+        if (loadState.refresh is LoadState.Loading && stableItems.items.itemCount == 0) {
             handled = true
             body()
         }
@@ -95,8 +95,7 @@ fun <T : Any> HandlePagingItems(
     PagingHandlerScope(items).content()
 }
 
-
-@Stable
-data class StablePagingItems<T : Any>(
+@Immutable
+class StablePagingItems<T : Any>(
     val items: LazyPagingItems<T>
 )

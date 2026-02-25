@@ -17,13 +17,15 @@ class AlbumUIMapperImpl @Inject constructor() : AlbumUIMapper {
             id = album.id,
             albumId = album.albumId,
             title = album.title,
-            thumbnailUrl = album.thumbnailUrl
+            thumbnailUrl = album.thumbnailUrl,
+            isFavourite = album.isFavourite
         )
     override fun toAlbumDetailsUIModel(album: Album): AlbumDetailsUIModel =
         AlbumDetailsUIModel(
             id = album.id,
             albumId = album.albumId,
             title = album.title,
-            url = album.url
+            url = album.url,
+            isFavourite = album.isFavourite
         )
 }

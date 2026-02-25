@@ -1,4 +1,4 @@
-package fr.leboncoin.ui
+package fr.leboncoin.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +30,11 @@ import com.adevinta.spark.ExperimentalSparkApi
 import com.adevinta.spark.SparkTheme
 import com.adevinta.spark.components.card.Card
 import com.adevinta.spark.components.chips.ChipTinted
+import com.adevinta.spark.components.iconbuttons.IconButtonGhost
 import com.adevinta.spark.components.text.Text
+import com.adevinta.spark.icons.SparkIcons
+import com.adevinta.spark.icons.StarFill
+import com.adevinta.spark.icons.StarOutline
 import fr.leboncoin.ui.extensions.shimmer
 import fr.leboncoin.ui.ui.AlbumUIModel
 import timber.log.Timber
@@ -38,7 +43,8 @@ import timber.log.Timber
 @Composable
 fun AlbumItem(
     album: AlbumUIModel,
-    onItemSelected : (AlbumUIModel) -> Unit,
+    onItemSelected: (AlbumUIModel) -> Unit,
+    onToggleFavourite: (AlbumUIModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -74,7 +80,7 @@ fun AlbumItem(
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .weight(1f)
                     .padding(14.dp),
             ) {
                 Text(
@@ -98,6 +104,13 @@ fun AlbumItem(
                     )
                 }
             }
+
+            IconButtonGhost(
+                modifier = Modifier.padding(8.dp),
+                icon = if (album.isFavourite) SparkIcons.StarFill else SparkIcons.StarOutline,
+                contentDescription = "Favourite",
+                onClick = { onToggleFavourite(album) }
+            )
         }
     }
 }
@@ -121,16 +134,12 @@ fun AlbumItemPlaceHolder() {
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .weight(1f)
                     .padding(14.dp)
                     .shimmer(true),
             ) {
-                Text(
-                    text = "",
-                    style = SparkTheme.typography.caption,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Box(modifier = Modifier.fillMaxWidth().height(20.dp).shimmer(true))
+                Spacer(Modifier.height(8.dp))
 
                 Spacer(Modifier.weight(1f))
 
@@ -138,12 +147,8 @@ fun AlbumItemPlaceHolder() {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    ChipTinted(
-                        text = ""
-                    )
-                    ChipTinted(
-                        text = ""
-                    )
+                    Box(modifier = Modifier.size(60.dp, 24.dp).shimmer(true))
+                    Box(modifier = Modifier.size(60.dp, 24.dp).shimmer(true))
                 }
             }
         }

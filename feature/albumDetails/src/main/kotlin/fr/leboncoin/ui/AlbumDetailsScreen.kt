@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,22 +25,65 @@ import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.adevinta.spark.ExperimentalSparkApi
 import com.adevinta.spark.SparkTheme
+import com.adevinta.spark.components.appbar.TopAppBar
 import com.adevinta.spark.components.chips.ChipTinted
+import com.adevinta.spark.components.iconbuttons.IconButtonGhost
 import com.adevinta.spark.components.scaffold.Scaffold
+import com.adevinta.spark.components.snackbars.SnackbarHost
 import com.adevinta.spark.components.text.Text
+import com.adevinta.spark.icons.ArrowLeft
+import com.adevinta.spark.icons.SparkIcons
+import com.adevinta.spark.icons.StarFill
+import com.adevinta.spark.icons.StarOutline
+import fr.leboncoin.ui.compositionlocal.LocalSnackbarHostState
 import fr.leboncoin.ui.extensions.shimmer
 import fr.leboncoin.ui.screens.ErrorScreen
 import fr.leboncoin.ui.ui.AlbumDetailsUIModel
 
+@OptIn(ExperimentalSparkApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumDetailsScreen(
     albumDetailsState: AlbumDetailsState,
+    snackbarEvent: kotlinx.coroutines.flow.SharedFlow<String>,
     modifier: Modifier = Modifier,
+    onToggleFavourite: (AlbumDetailsUIModel) -> Unit = {},
+    onBack: () -> Unit = {},
     onRetry: () -> Unit = {}
 ) {
+    val snackbarHostState = LocalSnackbarHostState.current
+    androidx.compose.runtime.LaunchedEffect(snackbarEvent) {
+        snackbarEvent.collect {
+            snackbarHostState.showSnackbar(it)
+        }
+    }
     Scaffold(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
+        topBar = {
+            if (albumDetailsState is AlbumDetailsState.Success) {
+                TopAppBar(
+                    title = {
+                        Text(text = albumDetailsState.album.title)
+                    },
+                    navigationIcon = {
+                        IconButtonGhost(
+                            icon = SparkIcons.ArrowLeft,
+                            contentDescription = "Back",
+                            onClick = onBack
+                        )
+                    },
+                    actions = {
+                        IconButtonGhost(
+                            icon = if (albumDetailsState.album.isFavourite) SparkIcons.StarFill else SparkIcons.StarOutline,
+                            contentDescription = "Favourite",
+                            onClick = { onToggleFavourite(albumDetailsState.album) }
+                        )
+                    }
+                )
+            }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Box(
             modifier = Modifier

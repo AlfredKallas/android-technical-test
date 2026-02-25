@@ -11,8 +11,11 @@ import fr.leboncoin.common.result.LCResult
 import fr.leboncoin.data.repository.AlbumRepository
 import fr.leboncoin.ui.mapper.AlbumUIMapper
 import fr.leboncoin.ui.ui.AlbumDetailsUIModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
@@ -28,6 +31,9 @@ class AlbumDetailsViewModel @AssistedInject constructor(
     private val albumMapper: AlbumUIMapper,
     @Assisted private val id: Long
 ) : ViewModel() {
+
+    private val _snackbarEvent = MutableSharedFlow<String>()
+    val snackbarEvent: SharedFlow<String> = _snackbarEvent.asSharedFlow()
 
     private val _state = MutableStateFlow<AlbumDetailsState>(AlbumDetailsState.Loading)
     val state: StateFlow<AlbumDetailsState> = _state
@@ -47,6 +53,13 @@ class AlbumDetailsViewModel @AssistedInject constructor(
                     is LCResult.Success -> _state.value = AlbumDetailsState.Success(albumMapper.toAlbumDetailsUIModel(it.data))
                 }
             }
+        }
+    }
+
+    fun toggleFavourite(album: AlbumDetailsUIModel) {
+        viewModelScope.launch {
+            repository.toggleFavourite(album.id, !album.isFavourite)
+            _snackbarEvent.emit(if (!album.isFavourite) "Added to favourites" else "Removed from favourites")
         }
     }
 
