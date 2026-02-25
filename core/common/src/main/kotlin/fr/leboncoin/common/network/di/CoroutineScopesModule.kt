@@ -16,12 +16,11 @@
 
 package fr.leboncoin.common.network.di
 
-import fr.leboncoin.common.network.Dispatcher
-import fr.leboncoin.common.network.ARTDispatchers.Default
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import fr.leboncoin.common.network.DefaultDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -39,6 +38,6 @@ internal object CoroutineScopesModule {
     @Singleton
     @ApplicationScope
     fun providesCoroutineScope(
-        @Dispatcher(Default) dispatcher: CoroutineDispatcher,
-    ): CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
+        @DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
+    ): CoroutineScope = CoroutineScope(SupervisorJob() + defaultDispatcher)
 }

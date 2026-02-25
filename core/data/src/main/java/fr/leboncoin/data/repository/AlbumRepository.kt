@@ -5,8 +5,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import fr.leboncoin.common.network.ARTDispatchers
-import fr.leboncoin.common.network.Dispatcher
+import fr.leboncoin.common.network.IODispatcher
 import fr.leboncoin.common.result.DomainError
 import fr.leboncoin.common.result.LCResult
 import fr.leboncoin.common.result.NetworkError
@@ -37,7 +36,7 @@ interface AlbumRepository {
 }
 
 internal class OfflineFirstAlbumRepository @Inject constructor(
-    @Dispatcher(ARTDispatchers.IO) private val coroutineDispatcher: CoroutineDispatcher,
+    @IODispatcher private val coroutineDispatcher: CoroutineDispatcher,
     private val albumApiService: AlbumApiService,
     private val database: LeboncoinDatabase,
     private val albumMapper: AlbumMapper

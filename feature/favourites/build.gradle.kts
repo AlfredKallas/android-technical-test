@@ -96,4 +96,7 @@ dependencies {
     testImplementation(libs.androidx.ui.test.junit4)
     testImplementation(libs.robolectric)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    testImplementation(libs.paging.common)
+    testImplementation(libs.paging.testing)
 }

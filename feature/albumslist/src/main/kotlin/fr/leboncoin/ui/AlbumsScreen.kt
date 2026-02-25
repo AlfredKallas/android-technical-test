@@ -87,7 +87,7 @@ fun AlbumsScreen(
                     when (syncState) {
                         is SyncState.Loading -> AlbumsLoadingScreen()
                         is SyncState.Error -> ErrorScreen(
-                            message = syncState.message,
+                            message = syncState.message.orEmpty(),
                             onRetry = onRetry
                         )
                         is SyncState.Success -> EmptyScreen(text = stringResource(R.string.no_albums), onRetry = onRetry)

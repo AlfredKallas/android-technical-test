@@ -7,6 +7,7 @@ import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.leboncoin.analytics.AnalyticsEvent
 import fr.leboncoin.common.extensions.stateInWhileSubscribed
+import fr.leboncoin.common.network.DefaultDispatcher
 import fr.leboncoin.common.result.LCResult
 import fr.leboncoin.data.repository.AlbumRepository
 import fr.leboncoin.data.repository.AnalyticsEventsRepository
@@ -14,11 +15,13 @@ import fr.leboncoin.resources.R
 import fr.leboncoin.ui.mapper.AlbumUIMapper
 import fr.leboncoin.ui.ui.AlbumUIModel
 import fr.leboncoin.ui.util.UiText
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,7 +36,8 @@ sealed class SyncState {
 class AlbumsViewModel @Inject constructor(
     private val repository: AlbumRepository,
     private val analyticsRepository: AnalyticsEventsRepository,
-    private val albumMapper: AlbumUIMapper
+    private val albumMapper: AlbumUIMapper,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _syncState = MutableStateFlow<SyncState>(SyncState.Loading)
@@ -67,7 +71,7 @@ class AlbumsViewModel @Inject constructor(
             pagingData.map { albumEntity ->
                 albumMapper.toAlbumUIModel(albumEntity)
             }
-        }
+        }.flowOn(defaultDispatcher)
         .cachedIn(viewModelScope)
 
     fun trackEventOnItemSelected(id: String) {

@@ -16,13 +16,12 @@
 
 package fr.leboncoin.common.network.di
 
-import fr.leboncoin.common.network.ARTDispatchers.Default
-import fr.leboncoin.common.network.ARTDispatchers.IO
-import fr.leboncoin.common.network.Dispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import fr.leboncoin.common.network.DefaultDispatcher
+import fr.leboncoin.common.network.IODispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
@@ -30,10 +29,10 @@ import kotlinx.coroutines.Dispatchers
 @InstallIn(SingletonComponent::class)
 object DispatchersModule {
     @Provides
-    @Dispatcher(IO)
+    @IODispatcher
     fun providesIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
-    @Dispatcher(Default)
+    @DefaultDispatcher
     fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 }

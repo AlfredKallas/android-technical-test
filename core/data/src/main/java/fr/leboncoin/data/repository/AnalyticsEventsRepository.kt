@@ -3,8 +3,6 @@ package fr.leboncoin.data.repository
 import fr.leboncoin.common.network.di.ApplicationScope
 import fr.leboncoin.analytics.AnalyticsEvent
 import fr.leboncoin.analytics.AnalyticsProvider
-import fr.leboncoin.common.network.ARTDispatchers
-import fr.leboncoin.common.network.Dispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject

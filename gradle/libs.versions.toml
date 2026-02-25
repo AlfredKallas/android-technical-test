@@ -101,6 +101,7 @@ room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
 paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
 paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
 paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
+paging-testing = { module = "androidx.paging:paging-testing", version.ref = "paging" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 # Core Navigation 3 libraries
